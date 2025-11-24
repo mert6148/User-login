@@ -1,14 +1,14 @@
 [2025-11-24 21:47:29] - Giriş - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
 [2025-11-24 21:47:29] - Çıkış - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
-[2025-11-24 21:47:29] - Giriş - Kullanıcı: ali, Ad-Soyad: Ali Veli
+[2025-11-24 21:47:29] - Giriş - Kullanıcı: mert, Ad-Soyad: Mert Doğanay
 [2025-11-24 21:47:29] - Başarısız giriş - Kullanıcı: unknown, Ad-Soyad: Bilinmiyor
 [2025-11-24 21:48:31] - Giriş - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
 [2025-11-24 21:48:31] - Çıkış - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
-[2025-11-24 21:48:31] - Giriş - Kullanıcı: ali, Ad-Soyad: Ali Veli
+[2025-11-24 21:48:31] - Giriş - Kullanıcı: mert, Ad-Soyad: Mert Doğanay
 [2025-11-24 21:48:31] - Başarısız giriş - Kullanıcı: unknown, Ad-Soyad: Bilinmiyor
 [2025-11-24 21:51:32] - Giriş - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
 [2025-11-24 21:51:32] - Çıkış - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
-[2025-11-24 21:51:32] - Giriş - Kullanıcı: ali, Ad-Soyad: Ali Veli
+[2025-11-24 21:51:32] - Giriş - Kullanıcı: mert, Ad-Soyad: Mert Doğanay
 [2025-11-24 21:51:32] - Başarısız giriş - Kullanıcı: unknown, Ad-Soyad: Bilinmiyor
 [2025-11-24 21:51:59] - Giriş - Kullanıcı: test_user, Ad-Soyad: Test Kullanıcı
   Sistem: {"os": "Windows", "os_version": "10.0.26100", "machine": "AMD64", "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel", "platform": "Windows-10-10.0.26100-SP0", "python": "3.11.9", "cwd": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"}
