@@ -1,0 +1,24 @@
+[2025-11-24 21:47:29] - Giriş - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
+[2025-11-24 21:47:29] - Çıkış - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
+[2025-11-24 21:47:29] - Giriş - Kullanıcı: ali, Ad-Soyad: Ali Veli
+[2025-11-24 21:47:29] - Başarısız giriş - Kullanıcı: unknown, Ad-Soyad: Bilinmiyor
+[2025-11-24 21:48:31] - Giriş - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
+[2025-11-24 21:48:31] - Çıkış - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
+[2025-11-24 21:48:31] - Giriş - Kullanıcı: ali, Ad-Soyad: Ali Veli
+[2025-11-24 21:48:31] - Başarısız giriş - Kullanıcı: unknown, Ad-Soyad: Bilinmiyor
+[2025-11-24 21:51:32] - Giriş - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
+[2025-11-24 21:51:32] - Çıkış - Kullanıcı: admin, Ad-Soyad: Sistem Yöneticisi
+[2025-11-24 21:51:32] - Giriş - Kullanıcı: ali, Ad-Soyad: Ali Veli
+[2025-11-24 21:51:32] - Başarısız giriş - Kullanıcı: unknown, Ad-Soyad: Bilinmiyor
+[2025-11-24 21:51:59] - Giriş - Kullanıcı: test_user, Ad-Soyad: Test Kullanıcı
+  Sistem: {"os": "Windows", "os_version": "10.0.26100", "machine": "AMD64", "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel", "platform": "Windows-10-10.0.26100-SP0", "python": "3.11.9", "cwd": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"}
+  KodDizinleri: {"root_py_files": ["print.py"]}
+[2025-11-24 21:52:13] - Giriş - Kullanıcı: ci_test_user, Ad-Soyad: CI Test
+  Sistem: {"os": "Windows", "os_version": "10.0.26100", "machine": "AMD64", "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel", "platform": "Windows-10-10.0.26100-SP0", "python": "3.11.9", "cwd": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"}
+  KodDizinleri: {"root_py_files": ["print.py"]}
+HELLO_TEST
+[2025-11-24 21:55:50] - Giriş - Kullanıcı: sanity, Ad-Soyad: Sanity Test
+  Sistem: {"os": "Windows", "os_version": "10.0.26100", "machine": "AMD64", "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel", "platform": "Windows-10-10.0.26100-SP0", "python": "3.11.9", "cwd": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"}
+  KodDizinleri: {"root_py_files": ["print.py"]}
+{"timestamp": "2025-11-24 21:55:50", "event": "Giriş", "username": "sanity", "full_name": "Sanity Test", "system": {"os": "Windows", "os_version": "10.0.26100", "machine": "AMD64", "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel", "platform": "Windows-10-10.0.26100-SP0", "python": "3.11.9", "cwd": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"}, "code_dirs": {"root_py_files": ["print.py"]}}
+{"timestamp": "2025-11-24 21:58:56", "event": "Giriş", "username": "jsononly_test", "full_name": "JSON Only Test", "system": {"os": "Windows", "os_version": "10.0.26100", "machine": "AMD64", "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel", "platform": "Windows-10-10.0.26100-SP0", "python": "3.11.9", "cwd": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"}, "code_dirs": {"root_py_files": ["print.py"]}}
