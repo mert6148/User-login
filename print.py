@@ -8,8 +8,12 @@ import sys
 from pathlib import Path
 from datetime import datetime
 import os
+import uuid
+import sqlite3
+import hashlib
 
 LOG_FILE = "login_log.txt"
+DB_FILE = "login_system.db"
 # Event type constants (lint ve tekrar kullanım için)
 EVENT_LOGIN = "Giriş"
 EVENT_LOGOUT = "Çıkış"
@@ -19,6 +23,125 @@ EVENT_FAILED = "Başarısız giriş"
 USERS = {
     "admin": {"password": "1234", "full_name": "Sistem Yöneticisi"},
 }
+
+# Database Functions
+def init_db():
+    """Initialize SQLite database with schema."""
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.executescript("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        salt TEXT NOT NULL,
+        hash TEXT NOT NULL,
+        full_name TEXT,
+        email TEXT UNIQUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login TIMESTAMP,
+        is_active BOOLEAN DEFAULT 1
+    );
+    CREATE TABLE IF NOT EXISTS user_attributes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        attribute_name TEXT NOT NULL,
+        attribute_value TEXT,
+        attribute_type TEXT DEFAULT 'string',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        UNIQUE(user_id, attribute_name)
+    );
+    CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+    CREATE INDEX IF NOT EXISTS idx_user_attributes_user_id ON user_attributes(user_id);
+    """)
+    conn.commit()
+    conn.close()
+
+def get_db_connection():
+    """Get SQLite database connection."""
+    return sqlite3.connect(DB_FILE)
+
+def set_user_attribute(username, attribute_name, attribute_value, attribute_type='string'):
+    """Set a user attribute in the database."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("SELECT id FROM users WHERE username = ?", (username,))
+        user = c.fetchone()
+        if not user:
+            return False
+        user_id = user[0]
+        c.execute("""
+            INSERT INTO user_attributes (user_id, attribute_name, attribute_value, attribute_type)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(user_id, attribute_name) DO UPDATE SET
+                attribute_value = ?,
+                attribute_type = ?,
+                updated_at = CURRENT_TIMESTAMP
+        """, (user_id, attribute_name, attribute_value, attribute_type,
+              attribute_value, attribute_type))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Hata: set_user_attribute başarısız - {e}")
+        return False
+    finally:
+        conn.close()
+
+def get_user_attribute(username, attribute_name):
+    """Get a user attribute from the database."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("""
+            SELECT attribute_value FROM user_attributes
+            WHERE user_id = (SELECT id FROM users WHERE username = ?)
+            AND attribute_name = ?
+        """, (username, attribute_name))
+        result = c.fetchone()
+        return result[0] if result else None
+    except Exception:
+        return None
+    finally:
+        conn.close()
+
+def get_user_attributes(username):
+    """Get all attributes for a user."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("""
+            SELECT attribute_name, attribute_value, attribute_type
+            FROM user_attributes
+            WHERE user_id = (SELECT id FROM users WHERE username = ?)
+            ORDER BY attribute_name
+        """, (username,))
+        return {row[0]: {"value": row[1], "type": row[2]} for row in c.fetchall()}
+    except Exception:
+        return {}
+    finally:
+        conn.close()
+
+def delete_user_attribute(username, attribute_name):
+    """Delete a user attribute."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("""
+            DELETE FROM user_attributes
+            WHERE user_id = (SELECT id FROM users WHERE username = ?)
+            AND attribute_name = ?
+        """, (username, attribute_name))
+        conn.commit()
+        return c.rowcount > 0
+    except Exception:
+        return False
+    finally:
+        conn.close()
+
+
 
 def _acquire_file_lock(f):
     """Cross-platform file lock (best-effort).
@@ -489,10 +612,140 @@ def main():
 
 
 if __name__ == "__main__":
-    import sys
+    import argparse
+    
+    # Initialize database
+    init_db()
+    
+    parser = argparse.ArgumentParser(prog="print.py", description="Kullanıcı girişi/çıkışı ve log yönetimi CLI")
+    sub = parser.add_subparsers(dest="cmd", help="Komutlar")
 
-    # Eğer komut satırından 'seed' verilmişse otomatik olarak örnek kayıtlar ekle
-    if len(sys.argv) > 1 and sys.argv[1].lower() in ("seed", "--seed"):
+    # add-user
+    p = sub.add_parser("add-user", help="Yeni kullanıcı oluştur")
+    p.add_argument("username")
+    p.add_argument("--password", "-p", help="Şifre (verilmezse prompt açılır)")
+    p.add_argument("--full-name", "-f", help="Ad Soyad", default=None)
+
+    # del-user
+    p = sub.add_parser("del-user", help="Kullanıcı sil")
+    p.add_argument("username")
+
+    # list-users
+    sub.add_parser("list-users", help="Kullanıcıları listeler")
+
+    # login
+    p = sub.add_parser("login", help="Kullanıcı girişi (non-interactive destekli)")
+    p.add_argument("username", help="Kullanıcı adı")
+    p.add_argument("--password", "-p", help="Şifre (verilmezse prompt açılır)")
+
+    # logout
+    p = sub.add_parser("logout", help="Çıkış yap (aktif oturumu sonlandırır)")
+    p.add_argument("--username", "-u", help="Çıkış yapılacak kullanıcı (varsayılan: aktif kullanıcı)", default=None)
+
+    # show-sessions
+    sub.add_parser("show-sessions", help="Oturumları gösterir")
+
+    # show-log
+    sub.add_parser("show-log", help="Kayıtları gösterir")
+
+    # seed, migrate, normalize
+    sub.add_parser("seed", help="Örnek log kayıtları ekle")
+    sub.add_parser("migrate", help="Legacy logları JSON-lines'a dönüştür")
+    sub.add_parser("normalize", help="JSON-lines dosyasını normalize et")
+
+    # set-attribute
+    p = sub.add_parser("set-attribute", help="Kullanıcı özelliği ayarla")
+    p.add_argument("username")
+    p.add_argument("attribute_name")
+    p.add_argument("attribute_value")
+    p.add_argument("--type", "-t", help="Veri türü (string, integer, boolean, json)", default="string")
+
+    # get-attribute
+    p = sub.add_parser("get-attribute", help="Kullanıcı özelliğini al")
+    p.add_argument("username")
+    p.add_argument("attribute_name")
+
+    # show-attributes
+    p = sub.add_parser("show-attributes", help="Kullanıcının tüm özelliklerini göster")
+    p.add_argument("username")
+
+    # delete-attribute
+    p = sub.add_parser("delete-attribute", help="Kullanıcı özelliğini sil")
+    p.add_argument("username")
+    p.add_argument("attribute_name")
+
+    args = parser.parse_args()
+
+    # load stores before handling commands
+    load_user_store()
+    load_sessions()
+
+    if args.cmd == "add-user":
+        if args.password:
+            ok = create_user(args.username, args.password, args.full_name)
+            print("Oluşturuldu" if ok else "Kullanıcı zaten mevcut veya hata")
+        else:
+            # interactive prompt
+            pw = getpass.getpass("Şifre: ")
+            pw2 = getpass.getpass("Şifre (tekrar): ")
+            if pw != pw2:
+                print("Şifreler uyuşmuyor.")
+            else:
+                ok = create_user(args.username, pw, args.full_name)
+                print("Oluşturuldu" if ok else "Kullanıcı zaten mevcut veya hata")
+
+    elif args.cmd == "del-user":
+        ok = delete_user(args.username)
+        print("Silindi" if ok else "Kullanıcı bulunamadı")
+
+    elif args.cmd == "list-users":
+        print(json.dumps(list_users(), ensure_ascii=False, indent=2))
+
+    elif args.cmd == "login":
+        login_command(args.username, password=args.password)
+
+    elif args.cmd == "logout":
+        logout_command(args.username)
+
+    elif args.cmd == "show-sessions":
+        show_sessions()
+
+    elif args.cmd == "show-log":
+        show_log()
+
+    elif args.cmd == "seed":
         seed_logs()
+
+    elif args.cmd == "migrate":
+        n = migrate_logs()
+        print(f"migrated= {n}")
+
+    elif args.cmd == "normalize":
+        n = normalize_jsonlines()
+        print(f"normalized= {n}")
+
+    elif args.cmd == "set-attribute":
+        ok = set_user_attribute(args.username, args.attribute_name, args.attribute_value, args.type)
+        print("Özellik ayarlandı" if ok else "Hata: Kullanıcı bulunamadı")
+
+    elif args.cmd == "get-attribute":
+        val = get_user_attribute(args.username, args.attribute_name)
+        if val is not None:
+            print(f"{args.attribute_name}: {val}")
+        else:
+            print("Özellik bulunamadı")
+
+    elif args.cmd == "show-attributes":
+        attrs = get_user_attributes(args.username)
+        if attrs:
+            print(json.dumps(attrs, ensure_ascii=False, indent=2))
+        else:
+            print("Kullanıcının hiç özelliği yok")
+
+    elif args.cmd == "delete-attribute":
+        ok = delete_user_attribute(args.username, args.attribute_name)
+        print("Özellik silindi" if ok else "Özellik bulunamadı")
+
     else:
+        # no command: run interactive menu
         main()
