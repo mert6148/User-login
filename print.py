@@ -1,5 +1,5 @@
 # print.py
-# Gelişmiş kullanıcı girişi + sistem bilgisi + giriş/çıkış kayıt sistemi
+# Gelişmiş kullanıcı girişi + sistem bilgisi + giriş/çıkış kayıt sistemi + Assets
 
 import platform
 import getpass  # Şifre girişini daha güvenli yapmak için eklenmiştir
@@ -11,6 +11,13 @@ import os
 import uuid
 import sqlite3
 import hashlib
+
+# Import assets module
+try:
+    from assets.assest import UserAssetManager, VALID_ASSET_CATEGORIES, create_sample_user_assets
+    ASSETS_AVAILABLE = True
+except ImportError:
+    ASSETS_AVAILABLE = False
 
 LOG_FILE = "login_log.txt"
 DB_FILE = "login_system.db"
@@ -141,6 +148,253 @@ def delete_user_attribute(username, attribute_name):
     finally:
         conn.close()
 
+
+# User management functions
+def hash_password(password, salt=None):
+    """Hash a password with PBKDF2-HMAC-SHA256."""
+    if salt is None:
+        salt = os.urandom(16).hex()
+    h = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000)
+    return salt, h.hex()
+
+
+def verify_password(password, salt, stored_hash):
+    """Verify a password against stored hash."""
+    _, h = hash_password(password, salt)
+    return h == stored_hash
+
+
+def create_user(username, password, full_name=None):
+    """Create a new user in the database."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        salt, hashed = hash_password(password)
+        c.execute("""
+            INSERT INTO users (username, salt, hash, full_name)
+            VALUES (?, ?, ?, ?)
+        """, (username, salt, hashed, full_name or ""))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        # User already exists
+        return False
+    except Exception as e:
+        print(f"Hata: create_user başarısız - {e}")
+        return False
+    finally:
+        conn.close()
+
+
+def delete_user(username):
+    """Delete a user from the database."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("DELETE FROM users WHERE username = ?", (username,))
+        conn.commit()
+        return c.rowcount > 0
+    except Exception:
+        return False
+    finally:
+        conn.close()
+
+
+def list_users():
+    """List all users."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("""
+            SELECT id, username, full_name, email, created_at, last_login
+            FROM users
+            ORDER BY username
+        """)
+        return [
+            {
+                "id": row[0],
+                "username": row[1],
+                "full_name": row[2] or "",
+                "email": row[3] or "",
+                "created_at": row[4],
+                "last_login": row[5]
+            }
+            for row in c.fetchall()
+        ]
+    except Exception:
+        return []
+    finally:
+        conn.close()
+
+
+# Session management
+def start_session(username):
+    """Start a session for a user."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("SELECT id FROM users WHERE username = ?", (username,))
+        user = c.fetchone()
+        if not user:
+            return None
+        
+        session_id = str(uuid.uuid4())
+        login_ts = datetime.now().isoformat()
+        c.execute("""
+            INSERT INTO sessions (id, user_id, login_ts)
+            VALUES (?, ?, ?)
+        """, (session_id, user[0], login_ts))
+        conn.commit()
+        return session_id
+    except Exception as e:
+        print(f"Hata: start_session başarısız - {e}")
+        return None
+    finally:
+        conn.close()
+
+
+def end_session(session_id):
+    """End a session."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        logout_ts = datetime.now().isoformat()
+        c.execute("""
+            UPDATE sessions SET logout_ts = ?
+            WHERE id = ?
+        """, (logout_ts, session_id))
+        conn.commit()
+        return True
+    except Exception:
+        return False
+    finally:
+        conn.close()
+
+
+def show_sessions():
+    """Display active sessions."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("""
+            SELECT s.id, u.username, s.login_ts, s.logout_ts
+            FROM sessions s
+            JOIN users u ON s.user_id = u.id
+            ORDER BY s.login_ts DESC
+            LIMIT 20
+        """)
+        print("--- Son 20 Oturum ---")
+        for row in c.fetchall():
+            session_id, username, login_ts, logout_ts = row
+            status = "Aktif" if logout_ts is None else "Kapalı"
+            print(f"{username} [{status}] - Giriş: {login_ts}, Çıkış: {logout_ts or 'Devam ediyor'}")
+    except Exception as e:
+        print(f"Hata: show_sessions başarısız - {e}")
+    finally:
+        conn.close()
+
+
+# Login/Logout commands
+def login_command(username, password=None):
+    """Non-interactive login command."""
+    if password is None:
+        password = getpass.getpass("Şifre: ")
+    
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("SELECT id, salt, hash, full_name FROM users WHERE username = ?", (username,))
+        user = c.fetchone()
+        if user:
+            user_id, salt, stored_hash, full_name = user
+            if verify_password(password, salt, stored_hash):
+                # Update last_login
+                c.execute("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?", (user_id,))
+                conn.commit()
+                
+                # Start session
+                session_id = start_session(username)
+                
+                # Log event
+                system = gather_system_info()
+                code_dirs = list_code_directories(system.get("cwd", "."))
+                log_event(EVENT_LOGIN, username, full_name or username, system=system, code_dirs=code_dirs)
+                
+                print(f"Giriş başarılı! {full_name or username}")
+                return True
+            else:
+                log_event(EVENT_FAILED, username, "")
+                print("Hatalı şifre!")
+                return False
+        else:
+            log_event(EVENT_FAILED, username, "")
+            print("Kullanıcı bulunamadı!")
+            return False
+    except Exception as e:
+        print(f"Hata: login_command başarısız - {e}")
+        return False
+    finally:
+        conn.close()
+
+
+def logout_command(username):
+    """Non-interactive logout command."""
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("SELECT id, full_name FROM users WHERE username = ?", (username,))
+        user = c.fetchone()
+        if user:
+            user_id, full_name = user
+            # End the most recent active session
+            c.execute("""
+                UPDATE sessions SET logout_ts = CURRENT_TIMESTAMP
+                WHERE user_id = ? AND logout_ts IS NULL
+                LIMIT 1
+            """, (user_id,))
+            conn.commit()
+            
+            log_event(EVENT_LOGOUT, username, full_name or username)
+            print(f"Çıkış yapıldı: {full_name or username}")
+            return True
+        else:
+            print("Kullanıcı bulunamadı!")
+            return False
+    except Exception as e:
+        print(f"Hata: logout_command başarısız - {e}")
+        return False
+    finally:
+        conn.close()
+
+
+# User store persistence (JSON files for compatibility)
+USERS_STORE_FILE = "users.json"
+SESSIONS_STORE_FILE = "sessions.json"
+
+
+def load_user_store():
+    """Load user store from JSON file (for backward compatibility)."""
+    global USERS
+    if os.path.exists(USERS_STORE_FILE):
+        try:
+            with open(USERS_STORE_FILE, "r", encoding="utf-8") as f:
+                USERS = json.load(f)
+        except Exception as e:
+            print(f"Uyarı: User store yüklenemedi - {e}")
+
+
+def save_user_store():
+    """Save user store to JSON file."""
+    try:
+        with open(USERS_STORE_FILE, "w", encoding="utf-8") as f:
+            json.dump(USERS, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Uyarı: User store kaydedilemedi - {e}")
+
+
+def load_sessions():
+    """Load sessions from JSON file (for backward compatibility)."""
+    pass  # Sessions are now in database
 
 
 def _acquire_file_lock(f):
@@ -674,7 +928,35 @@ if __name__ == "__main__":
     p.add_argument("username")
     p.add_argument("attribute_name")
 
+    # set-asset (varlık ayarla)
+    p = sub.add_parser("set-asset", help="Kullanıcı varlığı ayarla")
+    p.add_argument("username")
+    p.add_argument("asset_name")
+    p.add_argument("asset_value")
+    p.add_argument("--type", "-t", help="Varlık türü", default="string")
+    p.add_argument("--category", "-c", help="Kategorisi (profile/preferences/security/system/custom)", default="custom")
+
+    # get-asset (varlık al)
+    p = sub.add_parser("get-asset", help="Kullanıcı varlığını al")
+    p.add_argument("username")
+    p.add_argument("asset_name")
+
+    # show-assets (tüm varlıkları göster)
+    p = sub.add_parser("show-assets", help="Kullanıcının tüm varlıklarını göster")
+    p.add_argument("username")
+    p.add_argument("--category", "-c", help="Kategoriye göre filtrele (opsiyonel)")
+
+    # delete-asset (varlık sil)
+    p = sub.add_parser("delete-asset", help="Kullanıcı varlığını sil")
+    p.add_argument("username")
+    p.add_argument("asset_name")
+
     args = parser.parse_args()
+
+    # Initialize asset manager if available
+    asset_manager = None
+    if ASSETS_AVAILABLE:
+        asset_manager = UserAssetManager(DB_FILE)
 
     # load stores before handling commands
     load_user_store()
@@ -745,6 +1027,89 @@ if __name__ == "__main__":
     elif args.cmd == "delete-attribute":
         ok = delete_user_attribute(args.username, args.attribute_name)
         print("Özellik silindi" if ok else "Özellik bulunamadı")
+
+    elif args.cmd == "set-asset":
+        if not asset_manager:
+            print("Hata: Assets modülü mevcut değil")
+        else:
+            try:
+                conn = get_db_connection()
+                c = conn.cursor()
+                c.execute("SELECT id FROM users WHERE username = ?", (args.username,))
+                user = c.fetchone()
+                conn.close()
+                if user:
+                    ok = asset_manager.set_asset(user[0], args.asset_name, args.asset_value, 
+                                                args.type, args.category)
+                    print("Varlık ayarlandı" if ok else "Varlık ayarlanamadı")
+                else:
+                    print("Kullanıcı bulunamadı")
+            except Exception as e:
+                print(f"Hata: {e}")
+
+    elif args.cmd == "get-asset":
+        if not asset_manager:
+            print("Hata: Assets modülü mevcut değil")
+        else:
+            try:
+                conn = get_db_connection()
+                c = conn.cursor()
+                c.execute("SELECT id FROM users WHERE username = ?", (args.username,))
+                user = c.fetchone()
+                conn.close()
+                if user:
+                    asset = asset_manager.get_asset(user[0], args.asset_name)
+                    if asset:
+                        print(json.dumps(asset.to_dict(), ensure_ascii=False, indent=2))
+                    else:
+                        print("Varlık bulunamadı")
+                else:
+                    print("Kullanıcı bulunamadı")
+            except Exception as e:
+                print(f"Hata: {e}")
+
+    elif args.cmd == "show-assets":
+        if not asset_manager:
+            print("Hata: Assets modülü mevcut değil")
+        else:
+            try:
+                conn = get_db_connection()
+                c = conn.cursor()
+                c.execute("SELECT id FROM users WHERE username = ?", (args.username,))
+                user = c.fetchone()
+                conn.close()
+                if user:
+                    if hasattr(args, 'category') and args.category:
+                        assets = asset_manager.get_assets_by_category(user[0], args.category)
+                        print(json.dumps({k: v.to_dict() for k, v in assets.items()}, 
+                                      ensure_ascii=False, indent=2))
+                    else:
+                        all_assets = asset_manager.get_all_assets(user[0])
+                        print(json.dumps({cat: {k: v.to_dict() for k, v in assets.items()} 
+                                       for cat, assets in all_assets.items()},
+                                      ensure_ascii=False, indent=2))
+                else:
+                    print("Kullanıcı bulunamadı")
+            except Exception as e:
+                print(f"Hata: {e}")
+
+    elif args.cmd == "delete-asset":
+        if not asset_manager:
+            print("Hata: Assets modülü mevcut değil")
+        else:
+            try:
+                conn = get_db_connection()
+                c = conn.cursor()
+                c.execute("SELECT id FROM users WHERE username = ?", (args.username,))
+                user = c.fetchone()
+                conn.close()
+                if user:
+                    ok = asset_manager.delete_asset(user[0], args.asset_name)
+                    print("Varlık silindi" if ok else "Varlık bulunamadı")
+                else:
+                    print("Kullanıcı bulunamadı")
+            except Exception as e:
+                print(f"Hata: {e}")
 
     else:
         # no command: run interactive menu
