@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Attributes Schema",
+  "description": "JSON schema for user attributes/factors - kullanıcı özelikleri ve meta veriler",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "title": "User Attribute Record",
+    "description": "Bir kullanıcı özellik kaydı",
+    "required": ["id", "user_id", "attribute_name"],
+    "properties": {
+      "id": {
+        "type": "integer",
+        "description": "Özellik kaydının benzersiz ID'si",
+        "examples": [1, 2, 3]
+      },
+      "user_id": {
+        "type": "integer",
+        "description": "Bu özelliğe sahip kullanıcının ID'si",
+        "examples": [1, 2]
+      },
+      "attribute_name": {
+        "type": "string",
+        "description": "Özelliğin adı (örn: department, role, theme, locale, vb.)",
+        "enum": [
+          "department",
+          "role",
+          "theme",
+          "locale",
+          "timezone",
+          "notification_level",
+          "two_factor_enabled",
+          "password_expires_at",
+          "login_attempts",
+          "account_locked",
+          "custom_field_1",
+          "custom_field_2"
+        ],
+        "examples": ["department", "role", "theme"]
+      },
+      "attribute_value": {
+        "type": ["string", "null"],
+        "description": "Özelliğin değeri",
+        "examples": ["IT", "admin", "dark", "tr_TR", "Europe/Istanbul", null]
+      },
+      "attribute_type": {
+        "type": "string",
+        "description": "Veri türü (string, integer, boolean, json)",
+        "enum": ["string", "integer", "boolean", "json"],
+        "default": "string",
+        "examples": ["string", "integer", "boolean"]
+      },
+      "created_at": {
+        "type": "string",
+        "description": "Özellik oluşturulma tarihi (ISO 8601)",
+        "format": "date-time",
+        "examples": ["2025-11-25T21:52:07Z"]
+      },
+      "updated_at": {
+        "type": "string",
+        "description": "Özellik güncellenme tarihi (ISO 8601)",
+        "format": "date-time",
+        "examples": ["2025-11-25T21:52:07Z"]
+      }
+    }
+  },
+  "examples": [
+    [
+      {
+        "id": 1,
+        "user_id": 1,
+        "attribute_name": "department",
+        "attribute_value": "IT",
+        "attribute_type": "string",
+        "created_at": "2025-11-25T10:00:00Z",
+        "updated_at": "2025-11-25T10:00:00Z"
+      },
+      {
+        "id": 2,
+        "user_id": 1,
+        "attribute_name": "role",
+        "attribute_value": "admin",
+        "attribute_type": "string",
+        "created_at": "2025-11-25T10:00:00Z",
+        "updated_at": "2025-11-25T10:00:00Z"
+      },
+      {
+        "id": 3,
+        "user_id": 1,
+        "attribute_name": "theme",
+        "attribute_value": "dark",
+        "attribute_type": "string",
+        "created_at": "2025-11-25T10:00:00Z",
+        "updated_at": "2025-11-25T15:30:00Z"
+      },
+      {
+        "id": 4,
+        "user_id": 1,
+        "attribute_name": "timezone",
+        "attribute_value": "Europe/Istanbul",
+        "attribute_type": "string",
+        "created_at": "2025-11-25T10:00:00Z",
+        "updated_at": "2025-11-25T10:00:00Z"
+      },
+      {
+        "id": 5,
+        "user_id": 1,
+        "attribute_name": "two_factor_enabled",
+        "attribute_value": "true",
+        "attribute_type": "boolean",
+        "created_at": "2025-11-25T10:00:00Z",
+        "updated_at": "2025-11-25T10:00:00Z"
+      },
+      {
+        "id": 6,
+        "user_id": 1,
+        "attribute_name": "login_attempts",
+        "attribute_value": "0",
+        "attribute_type": "integer",
+        "created_at": "2025-11-25T10:00:00Z",
+        "updated_at": "2025-11-25T21:50:00Z"
+      },
+      {
+        "id": 7,
+        "user_id": 2,
+        "attribute_name": "department",
+        "attribute_value": "HR",
+        "attribute_type": "string",
+        "created_at": "2025-11-25T14:20:00Z",
+        "updated_at": "2025-11-25T14:20:00Z"
+      },
+      {
+        "id": 8,
+        "user_id": 2,
+        "attribute_name": "locale",
+        "attribute_value": "tr_TR",
+        "attribute_type": "string",
+        "created_at": "2025-11-25T14:20:00Z",
+        "updated_at": "2025-11-25T14:20:00Z"
+      }
+    ]
+  ]
+}
