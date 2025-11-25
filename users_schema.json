@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Users Store Schema",
+  "description": "JSON schema for users.json - kullanıcı deposunun veri yapısını tanımlar",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "title": "User Record",
+    "description": "Bir kullanıcı kaydı",
+    "required": ["salt", "hash"],
+    "properties": {
+      "salt": {
+        "type": "string",
+        "description": "PBKDF2 hash'i için kullanılan rastgele salt (hex formatı)",
+        "pattern": "^[0-9a-f]{32}$",
+        "examples": ["a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"]
+      },
+      "hash": {
+        "type": "string",
+        "description": "PBKDF2-HMAC-SHA256 ile hesaplanan şifre hash'i (hex formatı)",
+        "pattern": "^[0-9a-f]{64}$",
+        "examples": ["e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"]
+      },
+      "full_name": {
+        "type": ["string", "null"],
+        "description": "Kullanıcının tam adı (opsiyonel)",
+        "minLength": 1,
+        "maxLength": 255,
+        "examples": ["Mert Doğanay", "Alice Example", null]
+      },
+      "created_at": {
+        "type": "string",
+        "description": "Kullanıcı oluşturulma tarihi (ISO 8601 formatı, opsiyonel)",
+        "format": "date-time",
+        "examples": ["2025-11-25T21:52:07Z"]
+      },
+      "last_login": {
+        "type": ["string", "null"],
+        "description": "Son giriş tarihi (ISO 8601 formatı, opsiyonel)",
+        "format": "date-time",
+        "examples": ["2025-11-25T21:52:07Z", null]
+      }
+    }
+  },
+  "examples": [
+    {
+      "admin": {
+        "salt": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+        "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "full_name": "Sistem Yöneticisi",
+        "created_at": "2025-11-24T10:00:00Z",
+        "last_login": "2025-11-25T21:50:00Z"
+      },
+      "alice": {
+        "salt": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
+        "hash": "d4af3805b8d77c36034309e4661199f27b3d80b0ff7145142e559dd1d4514fd4",
+        "full_name": "Alice Example",
+        "created_at": "2025-11-25T15:30:00Z",
+        "last_login": null
+      }
+    }
+  ]
+}

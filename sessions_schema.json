@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sessions Store Schema",
+  "description": "JSON schema for sessions.json - aktif ve geçmiş oturum kayıtları",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "title": "Session Record",
+    "description": "Bir oturum kaydı",
+    "required": ["id", "username", "login_ts"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Oturum UUID'si (benzersiz tanımlayıcı)",
+        "format": "uuid",
+        "examples": ["02a31bdf-aad7-4868-afd0-9f2d4ae2b47"]
+      },
+      "username": {
+        "type": "string",
+        "description": "Oturum açan kullanıcı adı",
+        "examples": ["admin", "alice"]
+      },
+      "login_ts": {
+        "type": "string",
+        "description": "Giriş tarihi ve saati (YYYY-MM-DD HH:MM:SS formatı)",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
+        "examples": ["2025-11-25 21:52:07"]
+      },
+      "logout_ts": {
+        "type": ["string", "null"],
+        "description": "Çıkış tarihi ve saati (null = aktif oturum)",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$|^null$",
+        "examples": ["2025-11-25 21:55:30", null]
+      },
+      "system": {
+        "type": ["object", "null"],
+        "description": "Oturum başladığında kaydedilen sistem bilgileri (opsiyonel)",
+        "properties": {
+          "os": { "type": "string" },
+          "os_version": { "type": "string" },
+          "machine": { "type": "string" },
+          "processor": { "type": "string" },
+          "platform": { "type": "string" },
+          "python": { "type": "string" },
+          "cwd": { "type": "string" }
+        }
+      },
+      "code_dirs": {
+        "type": ["object", "null"],
+        "description": "Oturum başladığında kaydedilen kod dizini bilgileri (opsiyonel)"
+      }
+    }
+  },
+  "examples": [
+    [
+      {
+        "id": "02a31bdf-aad7-4868-afd0-9f2d4ae2b47",
+        "username": "admin",
+        "login_ts": "2025-11-25 21:52:07",
+        "logout_ts": "2025-11-25 21:55:30",
+        "system": {
+          "os": "Windows",
+          "os_version": "10.0.26100",
+          "machine": "AMD64",
+          "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+          "platform": "Windows-10-10.0.26100-SP0",
+          "python": "3.11.9",
+          "cwd": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"
+        },
+        "code_dirs": {
+          "root": {
+            "path": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi",
+            "files": [
+              {
+                "name": "print.py",
+                "size": 30195,
+                "mtime": "2025-11-25 21:49:52.237105"
+              }
+            ]
+          },
+          "subdirs": {}
+        }
+      },
+      {
+        "id": "15f4c2a1-8e9d-4f7b-a3c8-d5e1f0a9b2c",
+        "username": "alice",
+        "login_ts": "2025-11-25 22:00:00",
+        "logout_ts": null,
+        "system": null,
+        "code_dirs": null
+      }
+    ]
+  ]
+}
