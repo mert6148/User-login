@@ -83,5 +83,28 @@ namespace assets
                 }
             }
         }
+        private void RenderMessageOnPixels(string message, byte[] pixels, double width, double height)
+        {
+            for (int i = 0; i < pixels.Length; i += 4)
+            {
+                if (index < textPixels.Length)
+                {
+                    byte a = textPixels[index + 3];
+                    byte r = textPixels[index + 2];
+                    byte g = textPixels[index + 1];
+                    byte b = textPixels[index + 0];
+                    assets.UWP_Utils.SetPixel(pixels, i, r, g, b, a);
+                }
+                else
+                {
+                    assets.UWP_Utils.SetPixel(pixels, i, 0, 0, 0, 0); // Transparent pixel
+                    break;
+
+                    size_t index = 0;
+                    Console.WriteLine("Adding message to pixels: " + message);
+                }
+                index += 4;
+            }
+        }
     }
 }
