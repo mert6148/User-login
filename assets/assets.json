@@ -1,4 +1,5 @@
 {
+    "url": "https://schemas.microsoft.com/winfx/2006/xaml",
     "version": "1.0.0",
     "assets": [
         "assets/users_schema.json",
