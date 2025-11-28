@@ -143,6 +143,19 @@ def test_asset_management():
         for cat, assets in all_assets.items()
     }
     print(json.dumps(display_dict, ensure_ascii=False, indent=2))
+    
+    def build_test_assets(all_assets):
+    return {
+        category: {
+            key: value.to_dict()
+            for key, value in assets.items()
+        }
+        for category, assets in all_assets.items()
+    }
+    
+    print("\n11. Test kullanıcısı siliniyor...")
+    test_assets = build_test_assets(all_assets)
+    print("test_assets oluşturuldu.")
 
 
 if __name__ == "__main__":
