@@ -1,0 +1,289 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "User Login System API",
+    "version": "1.0.0",
+    "description": "Full mock API for User Login System, for testing and mock servers"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "API is healthy",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "status": "ok",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "summary": "List all users",
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "users": [
+                    {"username": "alice", "full_name": "Alice Smith"},
+                    {"username": "bob", "full_name": "Bob Johnson"}
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "username": "charlie",
+                "password": "pass123",
+                "full_name": "Charlie Brown"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "User created"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already exists",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": "User already exists"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{username}": {
+      "delete": {
+        "summary": "Delete a user",
+        "parameters": [
+          {"name": "username", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted",
+            "content": {
+              "application/json": {
+                "example": {"success": true, "message": "User deleted"}
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "error": "User not found"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "User login",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"example": {"username": "alice", "password": "alicepassword"}}}
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "example": {"success": true, "message": "Login successful", "username": "alice", "session_id": "sess_00123"}
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {"example": {"success": false, "error": "Invalid credentials"}}
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "summary": "User logout",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"example": {"username": "alice"}}}
+        },
+        "responses": {
+          "200": {"description": "Logout successful", "content": {"application/json": {"example": {"success": true, "message": "Logout successful"}}}}
+        }
+      }
+    },
+    "/api/v1/users/{username}/attributes": {
+      "get": {
+        "summary": "Get all attributes for a user",
+        "parameters": [{"name": "username", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {
+          "200": {
+            "description": "Attributes list",
+            "content": {
+              "application/json": {
+                "example": {"success": true, "username": "alice", "attributes": {"role": "admin", "email": "alice@example.com"}}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Set a user attribute",
+        "parameters": [{"name": "username", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"example": {"attribute_name": "department", "attribute_value": "IT", "attribute_type": "string"}}}
+        },
+        "responses": {
+          "201": {
+            "description": "Attribute set",
+            "content": {
+              "application/json": {
+                "example": {"success": true, "message": "Attribute set", "username": "alice", "attribute_name": "department", "attribute_value": "IT"}
+              }
+            }
+          },
+          "404": {"description": "User not found", "content": {"application/json": {"example": {"success": false, "error": "User not found"}}}}
+        }
+      }
+    },
+    "/api/v1/users/{username}/attributes/{attribute_name}": {
+      "get": {
+        "summary": "Get specific attribute",
+        "parameters": [
+          {"name": "username", "in": "path", "required": true, "schema": {"type": "string"}},
+          {"name": "attribute_name", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "Attribute value", "content": {"application/json": {"example": {"success": true, "username": "alice", "attribute_name": "role", "value": "admin"}}}},
+          "404": {"description": "Attribute not found", "content": {"application/json": {"example": {"success": false, "error": "Attribute not found"}}}}
+        }
+      },
+      "delete": {
+        "summary": "Delete attribute",
+        "parameters": [
+          {"name": "username", "in": "path", "required": true, "schema": {"type": "string"}},
+          {"name": "attribute_name", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "Deleted", "content": {"application/json": {"example": {"success": true, "message": "Attribute deleted"}}}},
+          "404": {"description": "Not found", "content": {"application/json": {"example": {"success": false, "error": "Attribute not found"}}}}
+        }
+      }
+    },
+    "/api/v1/sessions": {
+      "get": {
+        "summary": "List sessions",
+        "responses": {"200": {"description": "Sessions", "content": {"application/json": {"example": {"success": true, "sessions": [{"session_id": "sess_00123", "username": "alice"}, {"session_id": "sess_00124", "username": "bob"}]}}}}}
+      },
+      "post": {
+        "summary": "Create session",
+        "requestBody": {"required": true, "content": {"application/json": {"example": {"username": "charlie"}}}},
+        "responses": {"201": {"description": "Session created", "content": {"application/json": {"example": {"success": true, "session_id": "sess_00125", "username": "charlie"}}}}}
+      }
+    },
+    "/api/v1/sessions/{session_id}": {
+      "post": {
+        "summary": "End session",
+        "parameters": [{"name": "session_id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {
+          "200": {"description": "Session ended", "content": {"application/json": {"example": {"success": true, "message": "Session ended"}}}},
+          "404": {"description": "Session not found", "content": {"application/json": {"example": {"success": false, "error": "Session not found"}}}}
+        }
+      }
+    },
+    "/api/v1/logs": {
+      "get": {
+        "summary": "Get login logs",
+        "responses": {
+          "200": {
+            "description": "Logs",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "logs": [
+                    {"username": "alice", "action": "login", "timestamp": "2025-11-28T12:00:00Z"},
+                    {"username": "bob", "action": "logout", "timestamp": "2025-11-28T12:05:00Z"}
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root endpoint / API info",
+        "responses": {
+          "200": {
+            "description": "API information",
+            "content": {
+              "application/json": {
+                "example": {
+                  "name": "User Login System API",
+                  "version": "1.0.0",
+                  "endpoints": {
+                    "health": "/api/v1/health",
+                    "users": "/api/v1/users",
+                    "auth": {"login": "POST /api/v1/auth/login", "logout": "POST /api/v1/auth/logout"},
+                    "attributes": {
+                      "get_all": "GET /api/v1/users/<username>/attributes",
+                      "get_one": "GET /api/v1/users/<username>/attributes/<attribute_name>",
+                      "set": "POST /api/v1/users/<username>/attributes",
+                      "delete": "DELETE /api/v1/users/<username>/attributes/<attribute_name>"
+                    },
+                    "sessions": "/api/v1/sessions",
+                    "logs": "/api/v1/logs"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
