@@ -2,26 +2,32 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "User Attributes Schema",
   "description": "JSON schema for user attributes/factors - kullanıcı özelikleri ve meta veriler",
+  "version": "2.0.0",
   "type": "array",
   "items": {
     "type": "object",
     "title": "User Attribute Record",
     "description": "Bir kullanıcı özellik kaydı",
-    "required": ["id", "user_id", "attribute_name"],
+    "required": ["id", "user_id", "attribute_name", "attribute_type"],
     "properties": {
       "id": {
         "type": "integer",
         "description": "Özellik kaydının benzersiz ID'si",
+        "minimum": 1,
         "examples": [1, 2, 3]
       },
       "user_id": {
         "type": "integer",
         "description": "Bu özelliğe sahip kullanıcının ID'si",
+        "minimum": 1,
         "examples": [1, 2]
       },
       "attribute_name": {
         "type": "string",
         "description": "Özelliğin adı (örn: department, role, theme, locale, vb.)",
+        "minLength": 1,
+        "maxLength": 100,
+        "pattern": "^[a-z][a-z0-9_]*$",
         "enum": [
           "department",
           "role",
@@ -33,36 +39,94 @@
           "password_expires_at",
           "login_attempts",
           "account_locked",
+          "first_name",
+          "last_name",
+          "email",
+          "phone",
+          "avatar_url",
+          "bio",
+          "job_title",
+          "date_format",
+          "language",
+          "ip_address",
+          "user_agent",
+          "device_info",
+          "login_count",
+          "last_login",
+          "last_password_change",
           "custom_field_1",
-          "custom_field_2"
+          "custom_field_2",
+          "custom_field_3"
         ],
         "examples": ["department", "role", "theme"]
       },
       "attribute_value": {
-        "type": ["string", "null"],
-        "description": "Özelliğin değeri",
-        "examples": ["IT", "admin", "dark", "tr_TR", "Europe/Istanbul", null]
+        "type": ["string", "integer", "boolean", "null"],
+        "description": "Özelliğin değeri - tip attribute_type'a göre belirlenir",
+        "examples": ["IT", "admin", "dark", "tr_TR", "Europe/Istanbul", true, false, 0, 1, null]
       },
       "attribute_type": {
         "type": "string",
-        "description": "Veri türü (string, integer, boolean, json)",
-        "enum": ["string", "integer", "boolean", "json"],
+        "description": "Veri türü (string, integer, boolean, json, binary, file)",
+        "enum": ["string", "integer", "boolean", "json", "binary", "file"],
         "default": "string",
-        "examples": ["string", "integer", "boolean"]
+        "examples": ["string", "integer", "boolean", "json"]
+      },
+      "category": {
+        "type": "string",
+        "description": "Özellik kategorisi",
+        "enum": ["profile", "preferences", "security", "system", "custom"],
+        "default": "custom",
+        "examples": ["profile", "preferences", "security", "system"]
+      },
+      "description": {
+        "type": ["string", "null"],
+        "description": "Özellik açıklaması",
+        "maxLength": 500,
+        "examples": ["Kullanıcının departmanı", "Tema tercihi", null]
+      },
+      "is_protected": {
+        "type": "boolean",
+        "description": "Özellik korumalı mı?",
+        "default": false,
+        "examples": [true, false]
+      },
+      "protection_level": {
+        "type": ["string", "null"],
+        "description": "Koruma seviyesi",
+        "enum": ["standard", "high", "critical", null],
+        "default": null,
+        "examples": ["standard", "high", "critical", null]
       },
       "created_at": {
         "type": "string",
         "description": "Özellik oluşturulma tarihi (ISO 8601)",
         "format": "date-time",
-        "examples": ["2025-11-25T21:52:07Z"]
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+        "examples": ["2025-11-25T21:52:07Z", "2025-11-25T10:00:00Z"]
       },
       "updated_at": {
         "type": "string",
         "description": "Özellik güncellenme tarihi (ISO 8601)",
         "format": "date-time",
-        "examples": ["2025-11-25T21:52:07Z"]
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+        "examples": ["2025-11-25T21:52:07Z", "2025-11-25T15:30:00Z"]
+      },
+      "metadata": {
+        "type": ["object", "null"],
+        "description": "Ek metadata bilgileri",
+        "additionalProperties": true,
+        "examples": [
+          {
+            "source": "manual",
+            "verified": true,
+            "notes": "Kullanıcı tarafından ayarlandı"
+          },
+          null
+        ]
       }
-    }
+    },
+    "additionalProperties": false
   },
   "examples": [
     [
@@ -72,8 +136,16 @@
         "attribute_name": "department",
         "attribute_value": "IT",
         "attribute_type": "string",
+        "category": "profile",
+        "description": "Kullanıcının departmanı",
+        "is_protected": false,
+        "protection_level": null,
         "created_at": "2025-11-25T10:00:00Z",
-        "updated_at": "2025-11-25T10:00:00Z"
+        "updated_at": "2025-11-25T10:00:00Z",
+        "metadata": {
+          "source": "hr_system",
+          "verified": true
+        }
       },
       {
         "id": 2,
@@ -81,8 +153,13 @@
         "attribute_name": "role",
         "attribute_value": "admin",
         "attribute_type": "string",
+        "category": "profile",
+        "description": "Kullanıcı rolü",
+        "is_protected": true,
+        "protection_level": "high",
         "created_at": "2025-11-25T10:00:00Z",
-        "updated_at": "2025-11-25T10:00:00Z"
+        "updated_at": "2025-11-25T10:00:00Z",
+        "metadata": null
       },
       {
         "id": 3,
@@ -90,8 +167,16 @@
         "attribute_name": "theme",
         "attribute_value": "dark",
         "attribute_type": "string",
+        "category": "preferences",
+        "description": "Kullanıcı teması",
+        "is_protected": false,
+        "protection_level": null,
         "created_at": "2025-11-25T10:00:00Z",
-        "updated_at": "2025-11-25T15:30:00Z"
+        "updated_at": "2025-11-25T15:30:00Z",
+        "metadata": {
+          "source": "user_preference",
+          "verified": false
+        }
       },
       {
         "id": 4,
@@ -99,26 +184,45 @@
         "attribute_name": "timezone",
         "attribute_value": "Europe/Istanbul",
         "attribute_type": "string",
+        "category": "preferences",
+        "description": "Zaman dilimi",
+        "is_protected": false,
+        "protection_level": null,
         "created_at": "2025-11-25T10:00:00Z",
-        "updated_at": "2025-11-25T10:00:00Z"
+        "updated_at": "2025-11-25T10:00:00Z",
+        "metadata": null
       },
       {
         "id": 5,
         "user_id": 1,
         "attribute_name": "two_factor_enabled",
-        "attribute_value": "true",
+        "attribute_value": true,
         "attribute_type": "boolean",
+        "category": "security",
+        "description": "İki faktörlü kimlik doğrulama aktif mi?",
+        "is_protected": true,
+        "protection_level": "critical",
         "created_at": "2025-11-25T10:00:00Z",
-        "updated_at": "2025-11-25T10:00:00Z"
+        "updated_at": "2025-11-25T10:00:00Z",
+        "metadata": {
+          "source": "security_system",
+          "verified": true,
+          "last_verified": "2025-11-25T10:00:00Z"
+        }
       },
       {
         "id": 6,
         "user_id": 1,
         "attribute_name": "login_attempts",
-        "attribute_value": "0",
+        "attribute_value": 0,
         "attribute_type": "integer",
+        "category": "security",
+        "description": "Başarısız giriş denemesi sayısı",
+        "is_protected": true,
+        "protection_level": "high",
         "created_at": "2025-11-25T10:00:00Z",
-        "updated_at": "2025-11-25T21:50:00Z"
+        "updated_at": "2025-11-25T21:50:00Z",
+        "metadata": null
       },
       {
         "id": 7,
@@ -126,8 +230,13 @@
         "attribute_name": "department",
         "attribute_value": "HR",
         "attribute_type": "string",
+        "category": "profile",
+        "description": "Kullanıcının departmanı",
+        "is_protected": false,
+        "protection_level": null,
         "created_at": "2025-11-25T14:20:00Z",
-        "updated_at": "2025-11-25T14:20:00Z"
+        "updated_at": "2025-11-25T14:20:00Z",
+        "metadata": null
       },
       {
         "id": 8,
@@ -135,9 +244,48 @@
         "attribute_name": "locale",
         "attribute_value": "tr_TR",
         "attribute_type": "string",
+        "category": "preferences",
+        "description": "Kullanıcı yerel ayarı",
+        "is_protected": false,
+        "protection_level": null,
         "created_at": "2025-11-25T14:20:00Z",
-        "updated_at": "2025-11-25T14:20:00Z"
+        "updated_at": "2025-11-25T14:20:00Z",
+        "metadata": null
+      },
+      {
+        "id": 9,
+        "user_id": 1,
+        "attribute_name": "device_info",
+        "attribute_value": "{\"os\":\"Windows\",\"browser\":\"Chrome\",\"version\":\"120.0\"}",
+        "attribute_type": "json",
+        "category": "system",
+        "description": "Cihaz bilgileri",
+        "is_protected": false,
+        "protection_level": null,
+        "created_at": "2025-11-25T21:52:07Z",
+        "updated_at": "2025-11-25T21:52:07Z",
+        "metadata": {
+          "source": "system",
+          "auto_generated": true
+        }
       }
     ]
-  ]
+  ],
+  "definitions": {
+    "attribute_category": {
+      "type": "string",
+      "enum": ["profile", "preferences", "security", "system", "custom"],
+      "description": "Özellik kategorileri"
+    },
+    "attribute_type": {
+      "type": "string",
+      "enum": ["string", "integer", "boolean", "json", "binary", "file"],
+      "description": "Desteklenen veri tipleri"
+    },
+    "protection_level": {
+      "type": "string",
+      "enum": ["standard", "high", "critical"],
+      "description": "Koruma seviyeleri"
+    }
+  }
 }

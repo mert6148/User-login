@@ -1,12 +1,106 @@
 {
-  "testuser": {
-    "salt": "24de156b44afd2a33a9577b3f8e354ab",
-    "hash": "bebdefe1a9569a886aa9bd76cc5314077cd5b403680629474b59282a9c7f4fef",
-    "full_name": "Test User"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Users Database",
+  "description": "Kullanıcı veritabanı - User login system users",
+  "version": "2.0.0",
+  "last_updated": "2025-11-25T21:52:07Z",
+  "users": {
+    "testuser": {
+      "id": 1,
+      "username": "testuser",
+      "salt": "24de156b44afd2a33a9577b3f8e354ab",
+      "hash": "bebdefe1a9569a886aa9bd76cc5314077cd5b403680629474b59282a9c7f4fef",
+      "full_name": "Test User",
+      "email": "testuser@example.com",
+      "phone": "+90 555 123 4567",
+      "is_active": true,
+      "is_admin": false,
+      "created_at": "2025-11-20T10:00:00Z",
+      "updated_at": "2025-11-25T21:50:00Z",
+      "last_login": "2025-11-25T21:52:07Z",
+      "metadata": {
+        "department": "IT",
+        "role": "developer",
+        "locale": "tr_TR",
+        "timezone": "Europe/Istanbul"
+      }
+    },
+    "cli_test": {
+      "id": 2,
+      "username": "cli_test",
+      "salt": "ad46bb6b890abee00e136c9e09e9fb67",
+      "hash": "fd5e73397bf02e940a87bd97571bd423fe456bab46b763be5af82d6fc3ebbcbd",
+      "full_name": "CLI Test",
+      "email": "cli_test@example.com",
+      "phone": null,
+      "is_active": true,
+      "is_admin": false,
+      "created_at": "2025-11-22T14:30:00Z",
+      "updated_at": "2025-11-25T21:51:00Z",
+      "last_login": "2025-11-25T21:52:07Z",
+      "metadata": {
+        "department": "QA",
+        "role": "tester",
+        "locale": "en_US",
+        "timezone": "UTC"
+      }
+    },
+    "admin": {
+      "id": 3,
+      "username": "admin",
+      "salt": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "hash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+      "full_name": "System Administrator",
+      "email": "admin@example.com",
+      "phone": "+90 555 000 0001",
+      "is_active": true,
+      "is_admin": true,
+      "created_at": "2025-11-01T00:00:00Z",
+      "updated_at": "2025-11-25T20:00:00Z",
+      "last_login": "2025-11-25T21:00:00Z",
+      "metadata": {
+        "department": "IT",
+        "role": "admin",
+        "locale": "tr_TR",
+        "timezone": "Europe/Istanbul",
+        "two_factor_enabled": true
+      }
+    },
+    "demo_user": {
+      "id": 4,
+      "username": "demo_user",
+      "salt": "demo123456789012345678901234567890",
+      "hash": "demo_hash_123456789012345678901234567890123456789012345678901234567890",
+      "full_name": "Demo User",
+      "email": "demo@example.com",
+      "phone": null,
+      "is_active": true,
+      "is_admin": false,
+      "created_at": "2025-11-24T12:00:00Z",
+      "updated_at": "2025-11-24T12:00:00Z",
+      "last_login": null,
+      "metadata": {
+        "department": "Sales",
+        "role": "user",
+        "locale": "tr_TR",
+        "timezone": "Europe/Istanbul"
+      }
+    }
   },
-  "cli_test": {
-    "salt": "ad46bb6b890abee00e136c9e09e9fb67",
-    "hash": "fd5e73397bf02e940a87bd97571bd423fe456bab46b763be5af82d6fc3ebbcbd",
-    "full_name": "CLI Test"
+  "statistics": {
+    "total_users": 4,
+    "active_users": 4,
+    "admin_users": 1,
+    "last_user_id": 4
+  },
+  "settings": {
+    "password_min_length": 8,
+    "password_require_uppercase": true,
+    "password_require_lowercase": true,
+    "password_require_numbers": true,
+    "password_require_special": false,
+    "session_timeout_minutes": 30,
+    "max_login_attempts": 5,
+    "lockout_duration_minutes": 15
   }
 }

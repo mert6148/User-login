@@ -2,28 +2,294 @@
   "openapi": "3.0.3",
   "info": {
     "title": "User Login System API",
-    "version": "1.0.0",
-    "description": "Full mock API for User Login System, for testing and mock servers"
+    "version": "2.0.0",
+    "description": "Full-featured REST API for User Login System with authentication, user management, attributes, sessions, and logging capabilities. Gelişmiş kullanıcı giriş sistemi API'si.",
+    "contact": {
+      "name": "API Support",
+      "email": "support@example.com",
+      "url": "https://api.example.com/support"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "termsOfService": "https://api.example.com/terms"
   },
   "servers": [
     {
-      "url": "http://localhost:5000"
+      "url": "http://localhost:5000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.example.com",
+      "description": "Production server"
+    },
+    {
+      "url": "https://staging-api.example.com",
+      "description": "Staging server"
     }
   ],
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "User management operations"
+    },
+    {
+      "name": "Authentication",
+      "description": "Login and logout operations"
+    },
+    {
+      "name": "Attributes",
+      "description": "User attributes and metadata management"
+    },
+    {
+      "name": "Sessions",
+      "description": "Session management"
+    },
+    {
+      "name": "Logs",
+      "description": "Login and activity logs"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "username": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "pattern": "^[a-zA-Z0-9_]+$",
+            "description": "Unique username"
+          },
+          "full_name": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "User's full name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^\\+?[1-9]\\d{1,14}$",
+            "description": "User's phone number"
+          },
+          "is_active": {
+            "type": "boolean",
+            "default": true,
+            "description": "Is user active?"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is user admin?"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Account creation timestamp"
+          },
+          "last_login": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last login timestamp"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "User password"
+          },
+          "remember_me": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remember login session"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["success", "error"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "error_code": {
+            "type": "string",
+            "description": "Error code"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details"
+          }
+        }
+      },
+      "Attribute": {
+        "type": "object",
+        "required": ["attribute_name", "attribute_value", "attribute_type"],
+        "properties": {
+          "attribute_name": {
+            "type": "string",
+            "enum": ["department", "role", "theme", "locale", "timezone", "notification_level", "two_factor_enabled", "password_expires_at", "login_attempts", "account_locked"]
+          },
+          "attribute_value": {
+            "oneOf": [
+              {"type": "string"},
+              {"type": "integer"},
+              {"type": "boolean"},
+              {"type": "null"}
+            ]
+          },
+          "attribute_type": {
+            "type": "string",
+            "enum": ["string", "integer", "boolean", "json"],
+            "default": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["profile", "preferences", "security", "system", "custom"],
+            "default": "custom"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "closed", "expired"]
+          },
+          "login_ts": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "logout_ts": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "ip_address": {
+            "type": "string",
+            "format": "ipv4"
+          },
+          "user_agent": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token authentication"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key authentication"
+      }
+    }
+  },
   "paths": {
     "/api/v1/health": {
       "get": {
+        "tags": ["Health"],
         "summary": "Health check",
+        "description": "Check API health status and version information",
+        "operationId": "healthCheck",
         "responses": {
           "200": {
             "description": "API is healthy",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean", "example": true},
+                    "status": {"type": "string", "example": "ok"},
+                    "version": {"type": "string", "example": "2.0.0"},
+                    "timestamp": {"type": "string", "format": "date-time"},
+                    "uptime_seconds": {"type": "integer"}
+                  }
+                },
                 "example": {
                   "success": true,
                   "status": "ok",
-                  "version": "1.0.0"
+                  "version": "2.0.0",
+                  "timestamp": "2025-11-25T21:52:07Z",
+                  "uptime_seconds": 3600
                 }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
               }
             }
           }
@@ -32,47 +298,135 @@
     },
     "/api/v1/users": {
       "get": {
+        "tags": ["Users"],
         "summary": "List all users",
+        "description": "Get a list of all users in the system",
+        "operationId": "listUsers",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20},
+            "description": "Maximum number of users to return"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {"type": "integer", "minimum": 0, "default": 0},
+            "description": "Number of users to skip"
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "schema": {"type": "boolean"},
+            "description": "Filter by active status"
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of users",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "users": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/User"}
+                    },
+                    "total": {"type": "integer"},
+                    "limit": {"type": "integer"},
+                    "offset": {"type": "integer"}
+                  }
+                },
                 "example": {
                   "success": true,
                   "users": [
-                    {"username": "alice", "full_name": "Alice Smith"},
-                    {"username": "bob", "full_name": "Bob Johnson"}
-                  ]
+                    {"id": 1, "username": "alice", "full_name": "Alice Smith", "email": "alice@example.com", "is_active": true},
+                    {"id": 2, "username": "bob", "full_name": "Bob Johnson", "email": "bob@example.com", "is_active": true}
+                  ],
+                  "total": 2,
+                  "limit": 20,
+                  "offset": 0
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
           }
-        }
+        },
+        "security": [{"BearerAuth": []}]
       },
       "post": {
+        "tags": ["Users"],
         "summary": "Create new user",
+        "description": "Create a new user account",
+        "operationId": "createUser",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                  "username": {"type": "string", "minLength": 3, "maxLength": 50},
+                  "password": {"type": "string", "format": "password", "minLength": 8},
+                  "full_name": {"type": "string"},
+                  "email": {"type": "string", "format": "email"},
+                  "phone": {"type": "string"}
+                }
+              },
               "example": {
                 "username": "charlie",
-                "password": "pass123",
-                "full_name": "Charlie Brown"
+                "password": "SecurePass123!",
+                "full_name": "Charlie Brown",
+                "email": "charlie@example.com",
+                "phone": "+90 555 123 4567"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "User created",
+            "description": "User created successfully",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "message": {"type": "string"},
+                    "user": {"$ref": "#/components/schemas/User"}
+                  }
+                },
                 "example": {
                   "success": true,
-                  "message": "User created"
+                  "message": "User created",
+                  "user": {
+                    "id": 3,
+                    "username": "charlie",
+                    "full_name": "Charlie Brown",
+                    "email": "charlie@example.com",
+                    "is_active": true,
+                    "is_admin": false
+                  }
                 }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
               }
             }
           },
@@ -80,9 +434,11 @@
             "description": "User already exists",
             "content": {
               "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"},
                 "example": {
                   "success": false,
-                  "error": "User already exists"
+                  "error": "User already exists",
+                  "error_code": "USER_EXISTS"
                 }
               }
             }
@@ -91,16 +447,72 @@
       }
     },
     "/api/v1/users/{username}": {
-      "delete": {
-        "summary": "Delete a user",
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user by username",
+        "description": "Get detailed information about a specific user",
+        "operationId": "getUser",
         "parameters": [
-          {"name": "username", "in": "path", "required": true, "schema": {"type": "string"}}
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "Username"
+          }
         ],
         "responses": {
           "200": {
-            "description": "User deleted",
+            "description": "User details",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "user": {"$ref": "#/components/schemas/User"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete a user",
+        "description": "Delete a user account (admin only)",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "Username to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "message": {"type": "string"}
+                  }
+                },
                 "example": {"success": true, "message": "User deleted"}
               }
             }
@@ -109,144 +521,80 @@
             "description": "User not found",
             "content": {
               "application/json": {
-                "example": {"success": false, "error": "User not found"}
+                "schema": {"$ref": "#/components/schemas/Error"},
+                "example": {"success": false, "error": "User not found", "error_code": "USER_NOT_FOUND"}
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
               }
             }
           }
-        }
+        },
+        "security": [{"BearerAuth": []}]
       }
     },
     "/api/v1/auth/login": {
       "post": {
+        "tags": ["Authentication"],
         "summary": "User login",
+        "description": "Authenticate user and create a session",
+        "operationId": "login",
         "requestBody": {
           "required": true,
-          "content": {"application/json": {"example": {"username": "alice", "password": "alicepassword"}}}
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/LoginRequest"},
+              "example": {
+                "username": "alice",
+                "password": "alicepassword",
+                "remember_me": false
+              }
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "Login successful",
             "content": {
               "application/json": {
-                "example": {"success": true, "message": "Login successful", "username": "alice", "session_id": "sess_00123"}
+                "schema": {"$ref": "#/components/schemas/LoginResponse"},
+                "example": {
+                  "success": true,
+                  "message": "Login successful",
+                  "username": "alice",
+                  "session_id": "02a31bdf-aad7-4868-afd0-9f2d48ae2b47",
+                  "expires_at": "2025-11-26T21:52:07Z"
+                }
               }
             }
           },
           "401": {
             "description": "Invalid credentials",
             "content": {
-              "application/json": {"example": {"success": false, "error": "Invalid credentials"}}
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/logout": {
-      "post": {
-        "summary": "User logout",
-        "requestBody": {
-          "required": true,
-          "content": {"application/json": {"example": {"username": "alice"}}}
-        },
-        "responses": {
-          "200": {"description": "Logout successful", "content": {"application/json": {"example": {"success": true, "message": "Logout successful"}}}}
-        }
-      }
-    },
-    "/api/v1/users/{username}/attributes": {
-      "get": {
-        "summary": "Get all attributes for a user",
-        "parameters": [{"name": "username", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "responses": {
-          "200": {
-            "description": "Attributes list",
-            "content": {
               "application/json": {
-                "example": {"success": true, "username": "alice", "attributes": {"role": "admin", "email": "alice@example.com"}}
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Set a user attribute",
-        "parameters": [{"name": "username", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "requestBody": {
-          "required": true,
-          "content": {"application/json": {"example": {"attribute_name": "department", "attribute_value": "IT", "attribute_type": "string"}}}
-        },
-        "responses": {
-          "201": {
-            "description": "Attribute set",
-            "content": {
-              "application/json": {
-                "example": {"success": true, "message": "Attribute set", "username": "alice", "attribute_name": "department", "attribute_value": "IT"}
+                "schema": {"$ref": "#/components/schemas/Error"},
+                "example": {
+                  "success": false,
+                  "error": "Invalid credentials",
+                  "error_code": "INVALID_CREDENTIALS"
+                }
               }
             }
           },
-          "404": {"description": "User not found", "content": {"application/json": {"example": {"success": false, "error": "User not found"}}}}
-        }
-      }
-    },
-    "/api/v1/users/{username}/attributes/{attribute_name}": {
-      "get": {
-        "summary": "Get specific attribute",
-        "parameters": [
-          {"name": "username", "in": "path", "required": true, "schema": {"type": "string"}},
-          {"name": "attribute_name", "in": "path", "required": true, "schema": {"type": "string"}}
-        ],
-        "responses": {
-          "200": {"description": "Attribute value", "content": {"application/json": {"example": {"success": true, "username": "alice", "attribute_name": "role", "value": "admin"}}}},
-          "404": {"description": "Attribute not found", "content": {"application/json": {"example": {"success": false, "error": "Attribute not found"}}}}
-        }
-      },
-      "delete": {
-        "summary": "Delete attribute",
-        "parameters": [
-          {"name": "username", "in": "path", "required": true, "schema": {"type": "string"}},
-          {"name": "attribute_name", "in": "path", "required": true, "schema": {"type": "string"}}
-        ],
-        "responses": {
-          "200": {"description": "Deleted", "content": {"application/json": {"example": {"success": true, "message": "Attribute deleted"}}}},
-          "404": {"description": "Not found", "content": {"application/json": {"example": {"success": false, "error": "Attribute not found"}}}}
-        }
-      }
-    },
-    "/api/v1/sessions": {
-      "get": {
-        "summary": "List sessions",
-        "responses": {"200": {"description": "Sessions", "content": {"application/json": {"example": {"success": true, "sessions": [{"session_id": "sess_00123", "username": "alice"}, {"session_id": "sess_00124", "username": "bob"}]}}}}}
-      },
-      "post": {
-        "summary": "Create session",
-        "requestBody": {"required": true, "content": {"application/json": {"example": {"username": "charlie"}}}},
-        "responses": {"201": {"description": "Session created", "content": {"application/json": {"example": {"success": true, "session_id": "sess_00125", "username": "charlie"}}}}}
-      }
-    },
-    "/api/v1/sessions/{session_id}": {
-      "post": {
-        "summary": "End session",
-        "parameters": [{"name": "session_id", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "responses": {
-          "200": {"description": "Session ended", "content": {"application/json": {"example": {"success": true, "message": "Session ended"}}}},
-          "404": {"description": "Session not found", "content": {"application/json": {"example": {"success": false, "error": "Session not found"}}}}
-        }
-      }
-    },
-    "/api/v1/logs": {
-      "get": {
-        "summary": "Get login logs",
-        "responses": {
-          "200": {
-            "description": "Logs",
+          "423": {
+            "description": "Account locked",
             "content": {
               "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"},
                 "example": {
-                  "success": true,
-                  "logs": [
-                    {"username": "alice", "action": "login", "timestamp": "2025-11-28T12:00:00Z"},
-                    {"username": "bob", "action": "logout", "timestamp": "2025-11-28T12:05:00Z"}
-                  ]
+                  "success": false,
+                  "error": "Account is locked due to too many failed login attempts",
+                  "error_code": "ACCOUNT_LOCKED"
                 }
               }
             }
@@ -254,21 +602,609 @@
         }
       }
     },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User logout",
+        "description": "End user session and logout",
+        "operationId": "logout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username"],
+                "properties": {
+                  "username": {"type": "string"},
+                  "session_id": {"type": "string", "format": "uuid"}
+                }
+              },
+              "example": {
+                "username": "alice",
+                "session_id": "02a31bdf-aad7-4868-afd0-9f2d48ae2b47"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "message": {"type": "string"}
+                  }
+                },
+                "example": {"success": true, "message": "Logout successful"}
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/api/v1/users/{username}/attributes": {
+      "get": {
+        "tags": ["Attributes"],
+        "summary": "Get all attributes for a user",
+        "description": "Retrieve all attributes/metadata for a specific user",
+        "operationId": "getUserAttributes",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "Username"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["profile", "preferences", "security", "system", "custom"]
+            },
+            "description": "Filter by category"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attributes list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "username": {"type": "string"},
+                    "attributes": {
+                      "type": "object",
+                      "additionalProperties": {"$ref": "#/components/schemas/Attribute"}
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "username": "alice",
+                  "attributes": {
+                    "role": {"attribute_value": "admin", "attribute_type": "string", "category": "profile"},
+                    "email": {"attribute_value": "alice@example.com", "attribute_type": "string", "category": "profile"},
+                    "theme": {"attribute_value": "dark", "attribute_type": "string", "category": "preferences"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      },
+      "post": {
+        "tags": ["Attributes"],
+        "summary": "Set a user attribute",
+        "description": "Create or update a user attribute",
+        "operationId": "setUserAttribute",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "Username"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/Attribute"},
+              "example": {
+                "attribute_name": "department",
+                "attribute_value": "IT",
+                "attribute_type": "string",
+                "category": "profile",
+                "description": "User's department"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Attribute set successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "message": {"type": "string"},
+                    "username": {"type": "string"},
+                    "attribute_name": {"type": "string"},
+                    "attribute_value": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Attribute set",
+                  "username": "alice",
+                  "attribute_name": "department",
+                  "attribute_value": "IT"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/api/v1/users/{username}/attributes/{attribute_name}": {
+      "get": {
+        "tags": ["Attributes"],
+        "summary": "Get specific attribute",
+        "description": "Get a specific attribute value for a user",
+        "operationId": "getUserAttribute",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          },
+          {
+            "name": "attribute_name",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attribute value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "username": {"type": "string"},
+                    "attribute_name": {"type": "string"},
+                    "value": {},
+                    "attribute_type": {"type": "string"},
+                    "category": {"type": "string"}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "username": "alice",
+                  "attribute_name": "role",
+                  "value": "admin",
+                  "attribute_type": "string",
+                  "category": "profile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attribute not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      },
+      "delete": {
+        "tags": ["Attributes"],
+        "summary": "Delete attribute",
+        "description": "Delete a specific user attribute",
+        "operationId": "deleteUserAttribute",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          },
+          {
+            "name": "attribute_name",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attribute deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "message": {"type": "string"}
+                  }
+                },
+                "example": {"success": true, "message": "Attribute deleted"}
+              }
+            }
+          },
+          "404": {
+            "description": "Attribute not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/api/v1/sessions": {
+      "get": {
+        "tags": ["Sessions"],
+        "summary": "List sessions",
+        "description": "Get list of all active and recent sessions",
+        "operationId": "listSessions",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["active", "closed", "expired", "all"],
+              "default": "all"
+            },
+            "description": "Filter by session status"
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {"type": "string"},
+            "description": "Filter by username"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sessions list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "sessions": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Session"}
+                    },
+                    "total": {"type": "integer"}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "sessions": [
+                    {"id": "02a31bdf-aad7-4868-afd0-9f2d48ae2b47", "username": "alice", "status": "active", "login_ts": "2025-11-25T21:00:00Z"},
+                    {"id": "b2c3d4e5-f6a7-8901-bcde-f23456789012", "username": "bob", "status": "closed", "login_ts": "2025-11-25T20:00:00Z", "logout_ts": "2025-11-25T21:00:00Z"}
+                  ],
+                  "total": 2
+                }
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      },
+      "post": {
+        "tags": ["Sessions"],
+        "summary": "Create session",
+        "description": "Manually create a new session (admin only)",
+        "operationId": "createSession",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username"],
+                "properties": {
+                  "username": {"type": "string"},
+                  "duration_minutes": {"type": "integer", "default": 30}
+                }
+              },
+              "example": {
+                "username": "charlie",
+                "duration_minutes": 60
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "session_id": {"type": "string", "format": "uuid"},
+                    "username": {"type": "string"},
+                    "expires_at": {"type": "string", "format": "date-time"}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "session_id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+                  "username": "charlie",
+                  "expires_at": "2025-11-26T22:52:07Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/api/v1/sessions/{session_id}": {
+      "get": {
+        "tags": ["Sessions"],
+        "summary": "Get session details",
+        "description": "Get detailed information about a specific session",
+        "operationId": "getSession",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "session": {"$ref": "#/components/schemas/Session"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      },
+      "post": {
+        "tags": ["Sessions"],
+        "summary": "End session",
+        "description": "Manually end/close a session",
+        "operationId": "endSession",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session ended successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "message": {"type": "string"}
+                  }
+                },
+                "example": {"success": true, "message": "Session ended"}
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Error"}
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/api/v1/logs": {
+      "get": {
+        "tags": ["Logs"],
+        "summary": "Get login logs",
+        "description": "Retrieve login and activity logs with filtering options",
+        "operationId": "getLogs",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {"type": "string"},
+            "description": "Filter by username"
+          },
+          {
+            "name": "event_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["login", "logout", "failed_login", "all"]
+            },
+            "description": "Filter by event type"
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "schema": {"type": "string", "format": "date-time"},
+            "description": "Start date for filtering"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "schema": {"type": "string", "format": "date-time"},
+            "description": "End date for filtering"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {"type": "integer", "minimum": 1, "maximum": 1000, "default": 100},
+            "description": "Maximum number of logs to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {"type": "integer"},
+                          "username": {"type": "string"},
+                          "event_type": {"type": "string"},
+                          "timestamp": {"type": "string", "format": "date-time"},
+                          "ip_address": {"type": "string"},
+                          "user_agent": {"type": "string"},
+                          "status": {"type": "string"}
+                        }
+                      }
+                    },
+                    "total": {"type": "integer"}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "logs": [
+                    {"id": 1, "username": "alice", "event_type": "login", "timestamp": "2025-11-28T12:00:00Z", "ip_address": "192.168.1.100", "status": "success"},
+                    {"id": 2, "username": "bob", "event_type": "logout", "timestamp": "2025-11-28T12:05:00Z", "ip_address": "192.168.1.101", "status": "success"}
+                  ],
+                  "total": 2
+                }
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
     "/": {
       "get": {
+        "tags": ["Health"],
         "summary": "Root endpoint / API info",
+        "description": "Get API information and available endpoints",
+        "operationId": "getApiInfo",
         "responses": {
           "200": {
             "description": "API information",
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {"type": "string"},
+                    "version": {"type": "string"},
+                    "description": {"type": "string"},
+                    "endpoints": {"type": "object"}
+                  }
+                },
                 "example": {
                   "name": "User Login System API",
-                  "version": "1.0.0",
+                  "version": "2.0.0",
+                  "description": "Full-featured REST API for User Login System",
                   "endpoints": {
                     "health": "/api/v1/health",
                     "users": "/api/v1/users",
-                    "auth": {"login": "POST /api/v1/auth/login", "logout": "POST /api/v1/auth/logout"},
+                    "auth": {
+                      "login": "POST /api/v1/auth/login",
+                      "logout": "POST /api/v1/auth/logout"
+                    },
                     "attributes": {
                       "get_all": "GET /api/v1/users/<username>/attributes",
                       "get_one": "GET /api/v1/users/<username>/attributes/<attribute_name>",
