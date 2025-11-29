@@ -243,3 +243,12 @@ if __name__ == "__main__":
         import webbrowser
         webbrowser.open(url)
     app.run(host=args.host, port=args.port, debug=False)
+
+
+def main():
+    app.run(debug=True)
+    return 0
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())
+
