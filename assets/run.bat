@@ -81,6 +81,17 @@ start "" python dashboard.py --open
 REM Dashboard açılana kadar kısa bekleme
 timeout /t 1 >nul
 
+REM Giriş ekranını varsayılan tarayıcıda aç
+start "" http://localhost:5000
+
+REM Ana programa devam etmeden önce kısa bir bekleme
+timeout /t 2 >nul
+
+REM Sonraki adımlara devam edilecek...
+timeout /t 3 >nul
+
+REM Dashboard entegrasyonu tamamlandı
+echo [SUCCESS] DB Dashboard başlatıldı ve tarayıcıda açıldı.
 
 REM ===================== MAIN PROGRAM =======================
 echo [RUN] main.py çalıştırılıyor...
