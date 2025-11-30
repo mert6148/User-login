@@ -13,3 +13,24 @@ This is the most reliable way of managing their updates independently from the e
     Execute extension command "CS-Script: Detect and integrate CS-Script"
 
 Note: you need to have .NET SDK installed for using CS-Script (see https://dotnet.microsoft.com/en-us/download)
+
+## Example C# Script
+Here is a simple example of a C# script that you can run using CS-Script:
+
+```csharp
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Hello, CS-Script!");
+    }
+}
+```
+
+You can save this code in a file with a `.csx` extension (e.g., `HelloWorld.csx`) and run it using the CS-Script CLI:
+
+```bash
+csscript HelloWorld.csx
+```
