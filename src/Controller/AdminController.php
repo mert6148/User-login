@@ -54,4 +54,25 @@ class AdminController extends AbstractController
         $request->getSession()->clear();
         return $this->redirectToRoute('admin_login');
     }
+
+    #[Route('/admin/stats', name: 'admin_stats')]
+    public function stats(Request $request): Response
+    {
+        // Admin doğrulanmış mı?
+        if (!$request->getSession()->get('is_admin')) {
+            return $this->redirectToRoute('admin_login');
+        }
+
+        // İstatistik verilerini al
+        $adminService = $this->container->get('App\Service\AdminService');
+        $stats = $adminService->getSiteStats();
+
+        return $this->render('admin/stats.html.twig', [
+            'stats' => $stats,
+            'name' => $request->getSession()->get('admin_name'),
+            'username' => $request->getSession()->get('admin_username'),
+            'age' => $request->getSession()->get('admin_age'),
+            'email' => $request->getSession()->get('admin_email')
+        ]);
+    }
 }
