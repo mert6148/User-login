@@ -1,44 +1,66 @@
 <?php
 
-use App\Kernel;
-use Symfony\Component\ErrorHandler\Debug;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Dotenv\Dotenv;
+use App\Service\AdminService;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Exception;
 
-namespace Symfony\Component\ClassLoader\ApcClassLoader;
+namespace App\Service;
+namespace App\Framework;
 
-if (file_exists(dirname(__DIR__).'/vendor/autoload.php')) {
-    require_once dirname(__DIR__).'/vendor/autoload.php';
-} elseif (file_exists(dirname(__DIR__).'/../autoload.php')) {
-    require_once dirname(__DIR__).'/../autoload.php';
-} else {
-    throw new \RuntimeException('Install dependencies using Composer.');
+class AdminService
+{
+    public function getSiteStats(): array
+    {
+        return [
+            'total_users' => 120,
+            'active_sessions' => 8,
+            'orders_today' => 24
+        ];
+    }
+
+    public function getUserCount(): int
+    {
+         /**
+          * @return int
+          * @throws \Exception
+          */
+
+        if (condition) {
+            // Some code here
+            var_dump('This is a debug message');
+            $this->assertDirectoryIsReadable($directory);
+        }
+
+    }
+
+    public function getActiveSessions(): int
+    {
+        return 8;
+    }
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Login</title>
-</head>
-<body>
+class AdminServiceTest extends TestCase
+{
+    #[CoversClass(AdminService::class)]
+    #[Group('unit')]
+    public function testGetSiteStats(): void
+    {
+        $adminService = new AdminService();
+        $stats = $adminService->getSiteStats();
 
-    <!-- Navigation Bar with Login Form -->
-    <nav class="navbar">
-        <div class="login-form">
-            <form action="/login" method="POST">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-                <br>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-                <br>
-                <button type="submit">Login</button>
-            </form>
-        </div>
-    </nav>
-</body>
-</html>
+        $this->assertIsArray($stats);
+        $this->assertArrayHasKey('total_users', $stats);
+        $this->assertArrayHasKey('active_sessions', $stats);
+        $this->assertArrayHasKey('orders_today', $stats);
+    }
 
-src könfürbasyonu için PHP kodu geliştirip admin paneli ekleyebilir misin?
+    #[CoversClass(AdminService::class)]
+    #[Group('unit')]
+    public function testGetUserCount(): void
+    {
+        $adminService = new AdminService();
+        $userCount = $adminService->getUserCount();
+    }
+}
