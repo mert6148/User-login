@@ -1,0 +1,255 @@
+{
+  "name": "user-login-system",
+  "version": "2.0.0",
+  "description": "Gelişmiş kullanıcı giriş sistemi - Advanced user login system with authentication, session management, attributes, and comprehensive API support. Created with Python and C#.",
+  "main": "print.py",
+  "scripts": {
+    "start": "python print.py",
+    "start:dev": "python print.py --dev",
+    "start:prod": "python print.py --production",
+    "test": "python test_validation_workflow.py",
+    "test:unit": "pytest test_assets.py -v",
+    "test:integration": "pytest test_validation_workflow.py -v",
+    "test:e2e": "pytest --tb=short",
+    "test:coverage": "pytest --cov",
+    "lint": "pylint print.py api_server.py",
+    "lint:fix": "autopep8 --in-place --aggressive --aggressive print.py api_server.py",
+    "format": "black print.py api_server.py",
+    "type-check": "mypy print.py api_server.py",
+    "api:serve": "python api_server.py",
+    "api:dev": "python -m flask --app api_server run --debug",
+    "api:docs": "python -m http.server 8080 --directory docs",
+    "api:test": "curl http://localhost:5000/api/v1/health",
+    "api:logs": "curl http://localhost:5000/api/v1/logs?key=12345",
+    "api:dashboard": "curl http://localhost:5000/api/v1/dashboard?key=12345",
+    "db:migrate": "python -m scripts.migrate",
+    "db:seed": "python -m scripts.seed",
+    "db:backup": "python -m scripts.backup",
+    "db:verify": "sqlite3 login_system.db .tables",
+    "assets:protect": "python -c \"from assests.assest import protect_user_assets_cli, UserAssetManager; protect_user_assets_cli(UserAssetManager())\"",
+    "assets:status": "python -c \"from assests.assest import show_protection_status; show_protection_status()\"",
+    "verify:workflow": "python verify_workflow.py",
+    "build": "python setup.py build",
+    "install": "pip install -r requirements.txt",
+    "install:dev": "pip install -r requirements.txt && pip install pytest pytest-cov mypy black pylint autopep8",
+    "clean": "rm -rf __pycache__ *.pyc .pytest_cache .coverage htmlcov dist build *.egg-info api_cache.json api_access.log",
+    "version:check": "python -c \"import sys; print(f'Python {sys.version}')\"",
+    "deps:check": "pip list | grep -E 'flask|flask-cors|pytest'",
+    "health:check": "python -c \"from pathlib import Path; print('✓ API Server' if Path('api_server.py').exists() else '✗ API Server'); print('✓ Print Module' if Path('print.py').exists() else '✗ Print Module'); print('✓ Database' if Path('login_system.db').exists() else '✗ Database')\""
+  },
+  "keywords": [
+    "user-login",
+    "authentication",
+    "session-management",
+    "api",
+    "rest",
+    "python",
+    "csharp",
+    "sqlite",
+    "assets",
+    "attributes",
+    "security"
+  ],
+  "author": {
+    "name": "Nert Doğanay",
+    "email": "nert@example.com",
+    "url": "https://github.com/nertdoganay"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nertdoganay/user-login-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nertdoganay/user-login-system/issues"
+  },
+  "homepage": "https://github.com/nertdoganay/user-login-system#readme",
+  "engines": {
+    "node": ">=14.0.0",
+    "python": ">=3.8.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.10.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "pylint": "^3.0.0",
+    "black": "^23.12.0",
+    "mypy": "^1.7.0",
+    "autopep8": "^2.0.4"
+  },
+  "pythonDependencies": {
+    "flask": "^3.0.0",
+    "flask-cors": "^4.0.0",
+    "sqlite3": "builtin",
+    "hashlib": "builtin",
+    "json": "builtin",
+    "datetime": "builtin"
+  },
+  "config": {
+    "api": {
+      "port": 5000,
+      "host": "0.0.0.0",
+      "debug": false,
+      "cors_enabled": true
+    },
+    "database": {
+      "path": "login_system.db",
+      "backup_enabled": true,
+      "backup_interval_hours": 24
+    },
+    "security": {
+      "session_timeout_minutes": 30,
+      "max_login_attempts": 5,
+      "lockout_duration_minutes": 15,
+      "password_min_length": 8,
+      "require_2fa": false
+    },
+    "logging": {
+      "level": "INFO",
+      "file": "login_log.txt",
+      "max_size_mb": 10,
+      "backup_count": 5
+    }
+  },
+  "exampleData": {
+    "healthCheck": {
+      "success": true,
+      "status": "ok",
+      "version": "2.0.0",
+      "timestamp": "2025-11-25T21:52:07Z",
+      "uptime_seconds": 3600
+    },
+    "users": [
+      {
+        "id": 1,
+        "username": "alice",
+        "full_name": "Alice Smith",
+        "email": "alice@example.com",
+        "is_active": true,
+        "is_admin": false
+      },
+      {
+        "id": 2,
+        "username": "bob",
+        "full_name": "Bob Johnson",
+        "email": "bob@example.com",
+        "is_active": true,
+        "is_admin": false
+      }
+    ],
+    "createUserResponse": {
+      "success": true,
+      "message": "User created",
+      "user": {
+        "id": 3,
+        "username": "charlie",
+        "full_name": "Charlie Brown",
+        "email": "charlie@example.com",
+        "is_active": true,
+        "is_admin": false
+      }
+    },
+    "loginResponse": {
+      "success": true,
+      "message": "Login successful",
+      "username": "alice",
+      "session_id": "02a31bdf-aad7-4868-afd0-9f2d48ae2b47",
+      "expires_at": "2025-11-26T21:52:07Z"
+    },
+    "logoutResponse": {
+      "success": true,
+      "message": "Logout successful"
+    },
+    "userAttributes": {
+      "alice": {
+        "role": {
+          "attribute_value": "admin",
+          "attribute_type": "string",
+          "category": "profile"
+        },
+        "email": {
+          "attribute_value": "alice@example.com",
+          "attribute_type": "string",
+          "category": "profile"
+        },
+        "theme": {
+          "attribute_value": "dark",
+          "attribute_type": "string",
+          "category": "preferences"
+        }
+      }
+    },
+    "setAttributeResponse": {
+      "success": true,
+      "message": "Attribute set",
+      "username": "alice",
+      "attribute_name": "department",
+      "attribute_value": "IT"
+    },
+    "sessions": [
+      {
+        "id": "02a31bdf-aad7-4868-afd0-9f2d48ae2b47",
+        "username": "alice",
+        "status": "active",
+        "login_ts": "2025-11-25T21:00:00Z"
+      },
+      {
+        "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+        "username": "bob",
+        "status": "closed",
+        "login_ts": "2025-11-25T20:00:00Z",
+        "logout_ts": "2025-11-25T21:00:00Z"
+      }
+    ],
+    "createSessionResponse": {
+      "success": true,
+      "session_id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+      "username": "charlie",
+      "expires_at": "2025-11-26T22:52:07Z"
+    },
+    "logs": [
+      {
+        "id": 1,
+        "username": "alice",
+        "event_type": "login",
+        "timestamp": "2025-11-28T12:00:00Z",
+        "ip_address": "192.168.1.100",
+        "status": "success"
+      },
+      {
+        "id": 2,
+        "username": "bob",
+        "event_type": "logout",
+        "timestamp": "2025-11-28T12:05:00Z",
+        "ip_address": "192.168.1.101",
+        "status": "success"
+      }
+    ],
+    "rootEndpoint": {
+      "name": "User Login System API",
+      "version": "2.0.0",
+      "description": "Full-featured REST API for User Login System",
+      "endpoints": {
+        "health": "/api/v1/health",
+        "users": "/api/v1/users",
+        "auth": {
+          "login": "POST /api/v1/auth/login",
+          "logout": "POST /api/v1/auth/logout"
+        },
+        "attributes": {
+          "get_all": "GET /api/v1/users/<username>/attributes",
+          "get_one": "GET /api/v1/users/<username>/attributes/<attribute_name>",
+          "set": "POST /api/v1/users/<username>/attributes",
+          "delete": "DELETE /api/v1/users/<username>/attributes/<attribute_name>"
+        },
+        "sessions": "/api/v1/sessions",
+        "logs": "/api/v1/logs"
+      }
+    }
+  }
+}

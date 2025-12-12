@@ -1,0 +1,15 @@
+{% extends 'admin/dashboard.html.twig' %}
+
+{% block title %}Projects{% endblock %}
+
+{% block body %}
+  <h1>Projects</h1>
+  <p><a href="{{ path('dashboard_projects_new') }}">Create new project</a></p>
+  <ul>
+  {% for p in projects %}
+    <li><a href="{{ path('dashboard_projects_get', {'id': p.id}) }}">{{ p.name }}</a> - {{ p.slug }} ({{ p.owner }})</li>
+  {% else %}
+    <li>No projects</li>
+  {% endfor %}
+  </ul>
+{% endblock %}

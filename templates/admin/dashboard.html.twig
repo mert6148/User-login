@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <p>Hoş geldin, {{ username }}!</p>
+
+    <ul>
+        <li><a href="/admin/users">Kullanıcı Yönetimi</a></li>
+        <li><a href="/admin/settings">Site Ayarları</a></li>
+        <li><a href="{{ path('admin_logout') }}">Çıkış Yap</a></li>
+    </ul>
+</body>
+</html>

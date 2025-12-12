@@ -1,0 +1,19 @@
+{% extends 'admin/dashboard.html.twig' %}
+
+{% block title %}Project view{% endblock %}
+
+{% block body %}
+  <h1>{{ project.name }}</h1>
+  <p><strong>Slug:</strong> {{ project.slug }}</p>
+  <p><strong>Owner:</strong> {{ project.owner }}</p>
+  <p><strong>Created At:</strong> {{ project.created_at }}</p>
+  <h2>Metadata</h2>
+  <pre>{{ project.metadata|json_encode(constant('JSON_PRETTY_PRINT') ) }}</pre>
+  <h2>Secret</h2>
+  {% if project.secret_data %}
+    <pre>{{ project.secret_data }}</pre>
+  {% else %}
+    <p>No secret stored.</p>
+  {% endif %}
+  <p><a href="{{ path('dashboard_projects_list') }}">Back</a></p>
+{% endblock %}

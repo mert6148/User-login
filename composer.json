@@ -1,0 +1,18 @@
+{
+    "name": "mert6148/user-login",
+    "description": "Dashboard user management and auth utilities",
+    "type": "project",
+    "require": {
+        "php": "^8.0",
+        "symfony/console": "^6.0",
+        "symfony/http-foundation": "^6.4"
+    },
+    "autoload": {
+        "psr-4": { "App\\": "src/" }
+    },
+    "scripts": {
+        "console": "php bin/console",
+        "project-console": "php scripts/manage_projects.php",
+        "git-push": "powershell -File scripts/push_to_github.ps1"
+    }
+}
