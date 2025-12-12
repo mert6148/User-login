@@ -119,8 +119,15 @@ Arguments:
 
 POSIX shell (Linux, macOS):
 ```
-./scripts/push_to_github.sh <remote_url_or_empty> <branch> "Commit message"
+./scripts/push_to_github.sh [-r <remote_url>] [-b <branch>] [-m "Commit message"] [--use-user-repo] [-f]
 ```
+Flags:
+- `-r|--remote-url`: Git remote URL (optional if origin is configured)
+- `-b|--branch`: Branch to push (defaults to current branch or `main`)
+- `-m|--message`: Commit message
+- `--use-user-repo`: Use https://github.com/mert6148/User-login.git as the remote URL (convenience flag)
+- `-f|--force`: Force push even if no changes
+
 If remote is empty it will use the existing `origin` remote. Ensure `git` is configured and you have authenticated to GitHub via SSH or gh CLI.
 
 Security note: for automation, prefer `gh auth login` (GitHub CLI) or SSH keys rather than embedding tokens in command line arguments. Do not commit secrets.
