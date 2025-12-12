@@ -54,6 +54,29 @@ if (-not $RemoteUrl) {
 
 Write-Host "Using remote: $RemoteUrl"
 
+# If a RemoteUrl was specified, create a temporary remote name and add it if it isn't already configured.
+$remote_added = $false
+$remoteName = 'origin'
+try {
+    $existingOrigin = git remote get-url origin 2>$null
+    if ($LASTEXITCODE -eq 0) { $existingOrigin = $existingOrigin.Trim() } else { $existingOrigin = $null }
+} catch {
+    $existingOrigin = $null
+}
+if ($RemoteUrl -and $RemoteUrl -ne $existingOrigin) {
+    # Use a temp remote to avoid overwriting 'origin'
+    $random = [System.Guid]::NewGuid().ToString().Split('-')[0]
+    $remoteName = "temp-$random"
+    git remote add $remoteName $RemoteUrl 2>$null
+    if ($LASTEXITCODE -ne 0) { Write-ErrExit "Failed adding remote $remoteName for $RemoteUrl" }
+    $remote_added = $true
+} elseif ($RemoteUrl -and $RemoteUrl -eq $existingOrigin) {
+    # Remote URL matches existing origin; use origin
+    $remoteName = 'origin'
+} elseif (-not $RemoteUrl -and $existingOrigin) {
+    $remoteName = 'origin'
+}
+
 # Stage all changes
 git add -A
 if ($LASTEXITCODE -ne 0) { Write-ErrExit "git add failed" }
@@ -70,7 +93,11 @@ if ($status) {
     if ($LASTEXITCODE -ne 0) { Write-ErrExit "git commit failed" }
 }
 
-Write-Host "Pushing to origin/$Branch..."
-git push -u origin $Branch
+Write-Host "Pushing to $remoteName/$Branch..."
+git push -u $remoteName $Branch
 if ($LASTEXITCODE -ne 0) { Write-ErrExit "git push failed" }
 Write-Host "Push completed."
+if ($remote_added) {
+    Write-Host "Removing temporary remote $remoteName..."
+    git remote remove $remoteName 2>$null
+}
