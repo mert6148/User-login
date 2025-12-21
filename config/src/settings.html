@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Konfigürasyon - Network Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/Z1srPv7lOy9C27hHQ+Xp8a4MxAQ5a+V4YFE3+bkXhO/vP6l4N1ZAGC+nuZB+E1Pi6jQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="module" src="Network Manager.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="navbar" id="main-navbar">
+            <div class="nav-left">
+                <a href="Network Manager.html" class="nav-logo">
+                    <i class="fas fa-network-wired"></i>
+                    Network Manager
+                </a>
+                <a href="projects.html" class="nav-item">Projects</a>
+                <a href="networks.html" class="nav-item">Networks</a>
+                <a href="devices.html" class="nav-item">Devices</a>
+            </div>
+            <div class="nav-right">
+                <span class="nav-user" id="current-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username-display">Kullanıcı</span>
+                </span>
+                <a href="settings.html" class="nav-item active">Settings</a>
+                <a href="help.html" class="nav-item">Help</a>
+                <button class="btn-logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış
+                </button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="settings-header">
+                <h1><i class="fas fa-cog"></i> ML Konfigürasyon Ayarları</h1>
+                <p>Makine öğrenmesi modelleri ve analiz parametrelerini yapılandırın</p>
+            </div>
+
+            <!-- ML Configuration Tabs -->
+            <div class="config-tabs">
+                <button class="tab-btn active" data-tab="general">
+                    <i class="fas fa-sliders-h"></i>
+                    Genel Ayarlar
+                </button>
+                <button class="tab-btn" data-tab="models">
+                    <i class="fas fa-brain"></i>
+                    Model Yönetimi
+                </button>
+                <button class="tab-btn" data-tab="analysis">
+                    <i class="fas fa-chart-bar"></i>
+                    Analiz Parametreleri
+                </button>
+                <button class="tab-btn" data-tab="security">
+                    <i class="fas fa-shield-alt"></i>
+                    Güvenlik Kontrolleri
+                </button>
+                <button class="tab-btn" data-tab="notifications">
+                    <i class="fas fa-bell"></i>
+                    Bildirimler
+                </button>
+            </div>
+
+            <!-- General Settings Tab -->
+            <div class="config-tab-content active" id="tab-general">
+                <div class="config-section">
+                    <h2><i class="fas fa-toggle-on"></i> ML Servis Durumu</h2>
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>ML Analiz Servisi</span>
+                            <label class="switch">
+                                <input type="checkbox" id="ml-service-enabled" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Makine öğrenmesi analiz servisini etkinleştirir/devre dışı bırakır</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Otomatik Analiz</span>
+                            <label class="switch">
+                                <input type="checkbox" id="auto-analysis-enabled" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Belirli aralıklarla otomatik ağ analizi yapar</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="analysis-interval">Analiz Aralığı (dakika)</label>
+                        <input type="number" id="analysis-interval" min="1" max="1440" value="30" class="config-input">
+                        <p class="config-description">Otomatik analizler arasındaki süre (1-1440 dakika)</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="ml-thread-count">İşlemci Thread Sayısı</label>
+                        <input type="number" id="ml-thread-count" min="1" max="16" value="4" class="config-input">
+                        <p class="config-description">ML işlemleri için kullanılacak thread sayısı</p>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h2><i class="fas fa-database"></i> Veri Yönetimi</h2>
+                    <div class="config-item">
+                        <label for="data-retention-days">Veri Saklama Süresi (gün)</label>
+                        <input type="number" id="data-retention-days" min="1" max="365" value="30" class="config-input">
+                        <p class="config-description">Analiz verilerinin saklanacağı süre</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="max-dataset-size">Maksimum Veri Seti Boyutu (MB)</label>
+                        <input type="number" id="max-dataset-size" min="100" max="10000" value="1000" class="config-input">
+                        <p class="config-description">Tek bir veri setinin maksimum boyutu</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Veri Şifreleme</span>
+                            <label class="switch">
+                                <input type="checkbox" id="data-encryption-enabled" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Saklanan verileri şifreler</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Models Tab -->
+            <div class="config-tab-content" id="tab-models">
+                <div class="config-section">
+                    <h2><i class="fas fa-robot"></i> Aktif Modeller</h2>
+                    <div class="model-list" id="model-list">
+                        <div class="model-card">
+                            <div class="model-header">
+                                <h3>Anomali Tespit Modeli</h3>
+                                <span class="model-status active">Aktif</span>
+                            </div>
+                            <div class="model-info">
+                                <p><strong>Versiyon:</strong> v2.1.0</p>
+                                <p><strong>Doğruluk:</strong> 94.2%</p>
+                                <p><strong>Son Güncelleme:</strong> 2024-01-15</p>
+                                <p><strong>Algoritma:</strong> Isolation Forest</p>
+                            </div>
+                            <div class="model-actions">
+                                <button class="btn-action" onclick="MLConfig.reloadModel('anomaly')">
+                                    <i class="fas fa-sync"></i> Yenile
+                                </button>
+                                <button class="btn-action" onclick="MLConfig.testModel('anomaly')">
+                                    <i class="fas fa-vial"></i> Test Et
+                                </button>
+                                <button class="btn-action danger" onclick="MLConfig.deleteModel('anomaly')">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="model-card">
+                            <div class="model-header">
+                                <h3>Trafik Tahmin Modeli</h3>
+                                <span class="model-status active">Aktif</span>
+                            </div>
+                            <div class="model-info">
+                                <p><strong>Versiyon:</strong> v1.8.5</p>
+                                <p><strong>Doğruluk:</strong> 87.5%</p>
+                                <p><strong>Son Güncelleme:</strong> 2024-01-10</p>
+                                <p><strong>Algoritma:</strong> LSTM Neural Network</p>
+                            </div>
+                            <div class="model-actions">
+                                <button class="btn-action" onclick="MLConfig.reloadModel('traffic')">
+                                    <i class="fas fa-sync"></i> Yenile
+                                </button>
+                                <button class="btn-action" onclick="MLConfig.testModel('traffic')">
+                                    <i class="fas fa-vial"></i> Test Et
+                                </button>
+                                <button class="btn-action danger" onclick="MLConfig.deleteModel('traffic')">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="model-card">
+                            <div class="model-header">
+                                <h3>Güvenlik Skoru Modeli</h3>
+                                <span class="model-status inactive">Pasif</span>
+                            </div>
+                            <div class="model-info">
+                                <p><strong>Versiyon:</strong> v1.2.3</p>
+                                <p><strong>Doğruluk:</strong> 91.8%</p>
+                                <p><strong>Son Güncelleme:</strong> 2023-12-20</p>
+                                <p><strong>Algoritma:</strong> Random Forest</p>
+                            </div>
+                            <div class="model-actions">
+                                <button class="btn-action" onclick="MLConfig.activateModel('security')">
+                                    <i class="fas fa-power-off"></i> Aktifleştir
+                                </button>
+                                <button class="btn-action" onclick="MLConfig.testModel('security')">
+                                    <i class="fas fa-vial"></i> Test Et
+                                </button>
+                                <button class="btn-action danger" onclick="MLConfig.deleteModel('security')">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h2><i class="fas fa-plus-circle"></i> Yeni Model Yükle</h2>
+                        <div class="upload-model">
+                            <div class="upload-area" id="model-upload-area">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Model dosyasını buraya sürükleyin veya tıklayın</p>
+                                <input type="file" id="model-file-input" accept=".h5,.pkl,.onnx,.pb" style="display: none;">
+                            </div>
+                            <div class="upload-info">
+                                <p><strong>Desteklenen formatlar:</strong> .h5, .pkl, .onnx, .pb</p>
+                                <p><strong>Maksimum boyut:</strong> 500 MB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Parameters Tab -->
+            <div class="config-tab-content" id="tab-analysis">
+                <div class="config-section">
+                    <h2><i class="fas fa-chart-line"></i> Analiz Parametreleri</h2>
+                    
+                    <div class="config-item">
+                        <label for="anomaly-threshold">Anomali Eşik Değeri</label>
+                        <div class="range-input-group">
+                            <input type="range" id="anomaly-threshold" min="0" max="100" value="75" class="range-input">
+                            <span class="range-value" id="anomaly-threshold-value">75%</span>
+                        </div>
+                        <p class="config-description">Anomali olarak kabul edilecek minimum skor (0-100)</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="confidence-level">Güven Seviyesi</label>
+                        <div class="range-input-group">
+                            <input type="range" id="confidence-level" min="50" max="100" value="85" class="range-input">
+                            <span class="range-value" id="confidence-level-value">85%</span>
+                        </div>
+                        <p class="config-description">Tahminler için minimum güven seviyesi</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="prediction-window">Tahmin Penceresi (saat)</label>
+                        <select id="prediction-window" class="config-select">
+                            <option value="1">1 saat</option>
+                            <option value="6" selected>6 saat</option>
+                            <option value="12">12 saat</option>
+                            <option value="24">24 saat</option>
+                            <option value="48">48 saat</option>
+                        </select>
+                        <p class="config-description">Tahmin yapılacak zaman aralığı</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="sample-size">Örneklem Boyutu</label>
+                        <input type="number" id="sample-size" min="100" max="100000" value="10000" step="100" class="config-input">
+                        <p class="config-description">Analiz için kullanılacak veri örneklemi boyutu</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Derin Analiz Modu</span>
+                            <label class="switch">
+                                <input type="checkbox" id="deep-analysis-enabled">
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Daha detaylı analiz yapar ancak daha fazla kaynak kullanır</p>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h2><i class="fas fa-filter"></i> Filtreleme Ayarları</h2>
+                    
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Gürültü Filtreleme</span>
+                            <label class="switch">
+                                <input type="checkbox" id="noise-filter-enabled" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Veri gürültüsünü filtreler</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="noise-threshold">Gürültü Eşik Değeri</label>
+                        <div class="range-input-group">
+                            <input type="range" id="noise-threshold" min="0" max="50" value="10" class="range-input">
+                            <span class="range-value" id="noise-threshold-value">10%</span>
+                        </div>
+                        <p class="config-description">Gürültü olarak kabul edilecek maksimum değer</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Controls Tab -->
+            <div class="config-tab-content" id="tab-security">
+                <div class="config-section">
+                    <h2><i class="fas fa-shield-alt"></i> Güvenlik Kontrolleri</h2>
+                    
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>ML Input Validation</span>
+                            <label class="switch">
+                                <input type="checkbox" id="ml-input-validation" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">ML girişlerini otomatik olarak doğrular</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Şüpheli Pattern Tespiti</span>
+                            <label class="switch">
+                                <input type="checkbox" id="suspicious-pattern-detection" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Şüpheli veri kalıplarını tespit eder</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="security-score-threshold">Güvenlik Skoru Eşiği</label>
+                        <div class="range-input-group">
+                            <input type="range" id="security-score-threshold" min="0" max="100" value="70" class="range-input">
+                            <span class="range-value" id="security-score-threshold-value">70%</span>
+                        </div>
+                        <p class="config-description">Minimum güvenlik skoru (altında uyarı verilir)</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Otomatik Tehdit Engelleme</span>
+                            <label class="switch">
+                                <input type="checkbox" id="auto-threat-blocking">
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Tespit edilen tehditleri otomatik olarak engeller</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="max-login-attempts">Maksimum Giriş Denemesi</label>
+                        <input type="number" id="max-login-attempts" min="3" max="10" value="5" class="config-input">
+                        <p class="config-description">İzin verilen maksimum başarısız giriş denemesi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Tab -->
+            <div class="config-tab-content" id="tab-notifications">
+                <div class="config-section">
+                    <h2><i class="fas fa-bell"></i> Bildirim Ayarları</h2>
+                    
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>E-posta Bildirimleri</span>
+                            <label class="switch">
+                                <input type="checkbox" id="email-notifications">
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Önemli olaylar için e-posta bildirimi gönder</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label for="notification-email">E-posta Adresi</label>
+                        <input type="email" id="notification-email" placeholder="ornek@email.com" class="config-input">
+                        <p class="config-description">Bildirimlerin gönderileceği e-posta adresi</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Anomali Bildirimleri</span>
+                            <label class="switch">
+                                <input type="checkbox" id="anomaly-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Anomali tespit edildiğinde bildirim gönder</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Model Eğitimi Bildirimleri</span>
+                            <label class="switch">
+                                <input type="checkbox" id="training-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Model eğitimi tamamlandığında bildirim gönder</p>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-label">
+                            <span>Güvenlik Uyarıları</span>
+                            <label class="switch">
+                                <input type="checkbox" id="security-alerts" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <p class="config-description">Güvenlik tehditleri için anında bildirim</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="config-actions">
+                <button class="btn-save" id="save-config-btn">
+                    <i class="fas fa-save"></i>
+                    Ayarları Kaydet
+                </button>
+                <button class="btn-reset" id="reset-config-btn">
+                    <i class="fas fa-undo"></i>
+                    Varsayılanlara Dön
+                </button>
+                <button class="btn-export" id="export-config-btn">
+                    <i class="fas fa-download"></i>
+                    Dışa Aktar
+                </button>
+                <button class="btn-import" id="import-config-btn">
+                    <i class="fas fa-upload"></i>
+                    İçe Aktar
+                </button>
+            </div>
+
+            <!-- Alert Box -->
+            <div id="config-alert" class="alert-box" style="display: none;">
+                <button type="button" class="closebtn" aria-label="Kapat" onclick="this.parentElement.style.display='none';">&times;</button>
+                <strong id="config-alert-message"></strong>
+            </div>
+        </div>
+    </div>
+
+    <script src="ml-config.js"></script>
+</body>
+</html>
+

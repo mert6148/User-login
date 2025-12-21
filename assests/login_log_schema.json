@@ -1,0 +1,194 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Login Log Schema (JSON-lines)",
+  "description": "JSON schema for login_log.txt - JSON-lines formatında giriş/çıkış kayıtları (her satır bir JSON objesidir)",
+  "type": "object",
+  "required": ["timestamp", "event"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "description": "Olay tarihi ve saati (YYYY-MM-DD HH:MM:SS formatı)",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
+      "examples": ["2025-11-25 21:52:07"]
+    },
+    "event": {
+      "type": "string",
+      "description": "Olay türü",
+      "enum": ["Giriş", "Çıkış", "Başarısız giriş"],
+      "examples": ["Giriş", "Çıkış", "Başarısız giriş"]
+    },
+    "username": {
+      "type": ["string", "null"],
+      "description": "Kullanıcı adı (opsiyonel)",
+      "examples": ["admin", "alice", "Bilinmiyor", null]
+    },
+    "full_name": {
+      "type": ["string", "null"],
+      "description": "Kullanıcının tam adı (opsiyonel)",
+      "examples": ["Sistem Yöneticisi", "Alice Example", "Bilinmiyor", null]
+    },
+    "system": {
+      "type": ["object", "null"],
+      "description": "Sistem bilgileri (opsiyonel)",
+      "properties": {
+        "os": {
+          "type": "string",
+          "description": "İşletim sistemi adı",
+          "examples": ["Windows", "Linux", "Darwin"]
+        },
+        "os_version": {
+          "type": "string",
+          "description": "İşletim sistemi sürümü",
+          "examples": ["10.0.26100"]
+        },
+        "machine": {
+          "type": "string",
+          "description": "Makine mimarisi",
+          "examples": ["AMD64", "x86_64", "arm64"]
+        },
+        "processor": {
+          "type": "string",
+          "description": "İşlemci bilgisi (sanitize edilmiş, max 200 karakter)",
+          "examples": ["Intel64 Family 6 Model 151 Stepping 5, GenuineIntel"]
+        },
+        "platform": {
+          "type": "string",
+          "description": "Platform tanımı",
+          "examples": ["Windows-10-10.0.26100-SP0"]
+        },
+        "python": {
+          "type": "string",
+          "description": "Python versiyonu",
+          "examples": ["3.11.9"]
+        },
+        "cwd": {
+          "type": "string",
+          "description": "Çalışma dizini",
+          "examples": ["C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"]
+        }
+      }
+    },
+    "code_dirs": {
+      "type": ["object", "null"],
+      "description": "Kod dizini bilgileri (opsiyonel, yeni schema)",
+      "properties": {
+        "root": {
+          "type": "object",
+          "description": "Kök dizin bilgileri",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Kök dizinin tam yolu"
+            },
+            "files": {
+              "type": "array",
+              "description": "Kök dizindeki .py dosyaları",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Dosya adı"
+                  },
+                  "size": {
+                    "type": ["integer", "null"],
+                    "description": "Dosya boyutu (bayt)"
+                  },
+                  "mtime": {
+                    "type": ["string", "null"],
+                    "description": "Dosya son değiştirme tarihi (ISO formatı)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "subdirs": {
+          "type": "object",
+          "description": "Alt dizinlerdeki dosya bilgileri",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "type": "integer",
+                "description": "Bu dizindeki toplam .py dosya sayısı"
+              },
+              "files": {
+                "type": "array",
+                "description": "Örnek dosyalar (max 10)",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "description": "Göreli dosya yolu"
+                    },
+                    "size": {
+                      "type": ["integer", "null"],
+                      "description": "Dosya boyutu (bayt)"
+                    },
+                    "mtime": {
+                      "type": ["string", "null"],
+                      "description": "Dosya son değiştirme tarihi (ISO formatı)"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raw": {
+      "type": "string",
+      "description": "Parse edilemeyen ham satır (opsiyonel, migration sırasında kullanılır)",
+      "examples": ["ham metin satırı"]
+    }
+  },
+  "examples": [
+    {
+      "timestamp": "2025-11-25 21:52:07",
+      "event": "Giriş",
+      "username": "alice",
+      "full_name": "Alice Example",
+      "system": {
+        "os": "Windows",
+        "os_version": "10.0.26100",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+        "platform": "Windows-10-10.0.26100-SP0",
+        "python": "3.11.9",
+        "cwd": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi"
+      },
+      "code_dirs": {
+        "root": {
+          "path": "C:\\Users\\mertd\\OneDrive\\Masaüstü\\Kullanıcı girişi",
+          "files": [
+            {
+              "name": "print.py",
+              "size": 30195,
+              "mtime": "2025-11-25 21:49:52.237105"
+            }
+          ]
+        },
+        "subdirs": {}
+      }
+    },
+    {
+      "timestamp": "2025-11-25 21:52:15",
+      "event": "Çıkış",
+      "username": "alice",
+      "full_name": "Alice Example",
+      "system": null,
+      "code_dirs": null
+    },
+    {
+      "timestamp": "2025-11-25 21:52:20",
+      "event": "Başarısız giriş",
+      "username": "unknown",
+      "full_name": "Bilinmiyor",
+      "system": null,
+      "code_dirs": null
+    }
+  ]
+}

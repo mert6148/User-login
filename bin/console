@@ -1,0 +1,85 @@
+#!/usr/bin/env php
+<?php
+// Simple console stub for this repo.
+// If the requested command is `app:user:manage`, forward to scripts/manage_users.php
+
+$argv0 = $argv[0] ?? 'console';
+$cmd = $argv[1] ?? '';
+
+if (strpos($cmd, 'app:user:manage') === 0) {
+    // Build passthrough args: action + args
+    // e.g. php bin/console app:user:manage add alice
+    $passthru = array_slice($argv, 2);
+    // If action missing, show usage
+    if (empty($passthru) || $passthru[0] === '') {
+        // if no action provided, show help
+        echo "Usage: php bin/console app:user:manage <init|list|add|setpw|delete> [args]\n";
+        exit(1);
+    }
+    // Determine path to scripts/manage_users.php
+    $root = dirname(__DIR__);
+    $script = $root . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'manage_users.php';
+    if (!file_exists($script)) {
+        fwrite(STDERR, "manage_users.php not found at {$script}\n");
+        exit(1);
+    }
+    // Build command
+    $php = PHP_BINARY;
+    $args = array_map('escapeshellarg', $passthru);
+    $command = $php . ' ' . escapeshellarg($script) . ' ' . implode(' ', $args);
+    passthru($command, $rc);
+    exit($rc);
+}
+
+if (strpos($cmd, 'app:project:manage') === 0) {
+    $passthru = array_slice($argv, 2);
+    if (empty($passthru) || $passthru[0] === '') {
+        echo "Usage: php bin/console app:project:manage <init|list|create|get|update-secret|delete> [args]\n";
+        exit(1);
+    }
+    $root = dirname(__DIR__);
+    $script = $root . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'manage_projects.php';
+    if (!file_exists($script)) {
+        fwrite(STDERR, "manage_projects.php not found at {$script}\n");
+        exit(1);
+    }
+    $php = PHP_BINARY;
+    $args = array_map('escapeshellarg', $passthru);
+    $command = $php . ' ' . escapeshellarg($script) . ' ' . implode(' ', $args);
+    passthru($command, $rc);
+    exit($rc);
+}
+
+if (strpos($cmd, 'app:user:protect') === 0) {
+    $passthru = array_slice($argv, 2);
+    if (empty($passthru) || $passthru[0] === '') {
+        echo "Usage: php bin/console app:user:protect <protect|unprotect|lock|unlock|reset-pw|status|delete> <username> [--minutes N] [--force]\n";
+        exit(1);
+    }
+    $root = dirname(__DIR__);
+    $script = $root . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'user_admin_protect.php';
+    if (!file_exists($script)) {
+        fwrite(STDERR, "user_admin_protect.php not found at {$script}\n");
+        exit(1);
+    }
+    $php = PHP_BINARY;
+    $args = array_map('escapeshellarg', $passthru);
+    $command = $php . ' ' . escapeshellarg($script) . ' ' . implode(' ', $args);
+    passthru($command, $rc);
+    exit($rc);
+}
+
+// Otherwise, if vendor console exists, prefer it
+$vendorConsole = __DIR__ . '/../vendor/bin/console';
+if (file_exists($vendorConsole) && is_executable($vendorConsole)) {
+    array_shift($argv);
+    $cmdline = escapeshellcmd($vendorConsole) . ' ' . implode(' ', array_map('escapeshellarg', $argv));
+    passthru($cmdline, $rc);
+    exit($rc);
+}
+
+// Fallback help
+echo "This project provides a console stub. To manage users run:\n";
+echo "  php bin/console app:user:manage init\n";
+echo "Or use composer: composer run console -- app:user:manage list\n";
+exit(0);

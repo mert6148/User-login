@@ -1,0 +1,39 @@
+{
+    "url": "https://schemas.microsoft.com/winfx/2006/xaml",
+    "version": "1.0.0",
+    "assets": [
+        "assets/users_schema.json",
+        "assets/sessions_schema.json",
+        "assets/login_log_schema.json",
+        "assets/user_attributes_schema.json"
+    ],
+    "schemas": [
+        "users_schema.json",
+        "sessions_schema.json",
+        "login_log_schema.json",
+        "user_attributes_schema.json"
+    ],
+    "data_files": [
+        "users.json",
+        "sessions.json",
+        "login_log.txt",
+        "user_attributes.json"
+    ],
+    "scripts": [
+        "print.py"
+    ],
+    "documentation": [
+        "README.md",
+        "API_DOCUMENTATION.md"
+    ],
+    "tests": [
+        "tests/test_user_management.py",
+        "tests/test_session_management.py",
+        "tests/test_login_logging.py",
+        "tests/test_user_attributes.py"
+    ],
+    "configs": [
+        "config/default_config.json",
+        "config/production_config.json"
+    ]
+}
