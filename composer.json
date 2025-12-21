@@ -12,7 +12,14 @@
     },
     "scripts": {
         "console": "php bin/console",
+        "artisan": "php artisan",
         "project-console": "php scripts/manage_projects.php",
-        "git-push": "powershell -File scripts/push_to_github.ps1"
+        "git-push": "powershell -File scripts/push_to_github.ps1",
+        "post-install-cmd": [
+            "@php artisan db:migrate"
+        ],
+        "post-update-cmd": [
+            "@php artisan db:migrate"
+        ]
     }
 }

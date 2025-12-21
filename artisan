@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Artisan CLI Tool - Laravel-style Command Line Interface
+ * PHP kodlarının çalışabilmesi için geliştirilmiş CLI aracı
+ */
+
+// Bootstrap
+require __DIR__ . '/vendor/autoload.php';
+
+use App\Console\Kernel;
+use Symfony\Component\Console\Application;
+
+// Create application
+$app = new Application('Artisan CLI', '1.0.0');
+
+// Initialize kernel and register commands
+$kernel = new Kernel();
+$kernel->registerCommands($app);
+
+// Run application
+try {
+    $app->run();
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage() . "\n";
+    exit(1);
+}
+
