@@ -1,0 +1,64 @@
+name: CI — Tests & Reports
+
+on:
+  push:
+    branches: [ main, project-main ]
+  pull_request:
+    branches: [ main, project-main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # Default minimum coverage percentage (can be overridden in Actions workflow environment)
+      COVERAGE_MIN: 80
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+
+      - name: Install Node.js dependencies
+        run: |
+          npm install --save-dev eslint eslint-plugin-html htmlhint
+
+      - name: Run pytest and write JUnit + coverage (fail if coverage lower than $COVERAGE_MIN%)
+        run: |
+          mkdir -p artifacts
+          pytest -q --junitxml=artifacts/pytest-report.xml --cov=./ --cov-report=xml:artifacts/coverage.xml --cov-report=html:artifacts/coverage-html --cov-fail-under=$COVERAGE_MIN
+
+      - name: Run verify_workflow and write JUnit
+        run: |
+          mkdir -p artifacts
+          python verify_workflow.py --all --report-format junit --output artifacts/verify-report.xml
+
+      - name: Lint HTML files
+        run: |
+          npx htmlhint "config/src/*.html" || true
+
+      - name: Lint JavaScript files
+        run: |
+          npx eslint "config/src/*.js" --format json --output-file artifacts/eslint-report.json || true
+
+      - name: Upload test reports & coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            artifacts/*.xml
+            artifacts/coverage.xml
+            artifacts/coverage-html/**
+            artifacts/eslint-report.json

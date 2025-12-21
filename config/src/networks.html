@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ağ Yönetimi - Network Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/Z1srPv7lOy9C27hHQ+Xp8a4MxAQ5a+V4YFE3+bkXhO/vP6l4N1ZAGC+nuZB+E1Pi6jQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="module" src="Network Manager.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="navbar" id="main-navbar">
+            <div class="nav-left">
+                <a href="Network Manager.html" class="nav-logo">
+                    <i class="fas fa-network-wired"></i>
+                    Network Manager
+                </a>
+                <a href="projects.html" class="nav-item">Projects</a>
+                <a href="networks.html" class="nav-item active">Networks</a>
+                <a href="devices.html" class="nav-item">Devices</a>
+            </div>
+            <div class="nav-right">
+                <span class="nav-user" id="current-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username-display">Kullanıcı</span>
+                </span>
+                <a href="settings.html" class="nav-item">Settings</a>
+                <a href="help.html" class="nav-item">Help</a>
+                <button class="btn-logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış
+                </button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-project-diagram"></i> Ağ Yönetimi</h1>
+                <p>Ağ topolojisi ve bağlantı konfigürasyonları</p>
+            </div>
+
+            <!-- Network Statistics -->
+            <div class="network-stats-grid">
+                <div class="network-stat-card">
+                    <div class="network-stat-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="network-stat-info">
+                        <h3>Aktif Ağlar</h3>
+                        <p class="network-stat-value">5</p>
+                    </div>
+                </div>
+
+                <div class="network-stat-card">
+                    <div class="network-stat-icon online">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="network-stat-info">
+                        <h3>Bağlı Cihazlar</h3>
+                        <p class="network-stat-value">24</p>
+                    </div>
+                </div>
+
+                <div class="network-stat-card">
+                    <div class="network-stat-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="network-stat-info">
+                        <h3>Ortalama Bant Genişliği</h3>
+                        <p class="network-stat-value">850 Mbps</p>
+                    </div>
+                </div>
+
+                <div class="network-stat-card">
+                    <div class="network-stat-icon warning">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="network-stat-info">
+                        <h3>Aktif Uyarılar</h3>
+                        <p class="network-stat-value">2</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Configuration Quick Access -->
+            <div class="network-config-section" id="network-config">
+                <h2><i class="fas fa-cog"></i> Ağ Hızlı Konfigürasyonlar</h2>
+                <div class="network-config-grid">
+                    <div class="network-config-card">
+                        <div class="network-config-header">
+                            <i class="fas fa-ethernet"></i>
+                            <h3>LAN Konfigürasyonu</h3>
+                        </div>
+                        <div class="network-config-body">
+                            <p><strong>3 Ağ</strong> - Yerel ağ ayarları</p>
+                            <div class="network-config-actions">
+                                <button class="btn-network-config" onclick="NetworkManager.configureNetwork('lan')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-network-config" onclick="NetworkManager.testNetwork('lan')">
+                                    <i class="fas fa-vial"></i> Test Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="network-config-card">
+                        <div class="network-config-header">
+                            <i class="fas fa-cloud"></i>
+                            <h3>WAN Konfigürasyonu</h3>
+                        </div>
+                        <div class="network-config-body">
+                            <p><strong>2 Ağ</strong> - Geniş alan ağı ayarları</p>
+                            <div class="network-config-actions">
+                                <button class="btn-network-config" onclick="NetworkManager.configureNetwork('wan')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-network-config" onclick="NetworkManager.testNetwork('wan')">
+                                    <i class="fas fa-vial"></i> Test Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="network-config-card">
+                        <div class="network-config-header">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>VPN Konfigürasyonu</h3>
+                        </div>
+                        <div class="network-config-body">
+                            <p><strong>1 Ağ</strong> - VPN bağlantı ayarları</p>
+                            <div class="network-config-actions">
+                                <button class="btn-network-config" onclick="NetworkManager.configureNetwork('vpn')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-network-config" onclick="NetworkManager.testNetwork('vpn')">
+                                    <i class="fas fa-vial"></i> Test Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="network-config-card">
+                        <div class="network-config-header">
+                            <i class="fas fa-firewall"></i>
+                            <h3>Güvenlik Duvarı</h3>
+                        </div>
+                        <div class="network-config-body">
+                            <p><strong>Aktif</strong> - Güvenlik kuralları</p>
+                            <div class="network-config-actions">
+                                <button class="btn-network-config" onclick="NetworkManager.configureNetwork('firewall')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-network-config" onclick="NetworkManager.viewFirewallRules()">
+                                    <i class="fas fa-list"></i> Kuralları Gör
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network List -->
+            <div class="network-list-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Ağ Listesi</h2>
+                    <button class="btn-add-network" onclick="NetworkManager.showAddNetworkModal()">
+                        <i class="fas fa-plus"></i> Yeni Ağ Ekle
+                    </button>
+                </div>
+
+                <div class="network-cards-grid">
+                    <div class="network-card">
+                        <div class="network-card-header">
+                            <h3>LAN - Office Network</h3>
+                            <span class="network-status-badge online">Aktif</span>
+                        </div>
+                        <div class="network-card-body">
+                            <div class="network-info-item">
+                                <i class="fas fa-network-wired"></i>
+                                <span>192.168.1.0/24</span>
+                            </div>
+                            <div class="network-info-item">
+                                <i class="fas fa-server"></i>
+                                <span>12 Cihaz Bağlı</span>
+                            </div>
+                            <div class="network-info-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>1 Gbps</span>
+                            </div>
+                        </div>
+                        <div class="network-card-actions">
+                            <button class="btn-network-action" onclick="NetworkManager.viewNetwork('lan1')">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </button>
+                            <button class="btn-network-action" onclick="NetworkManager.configureNetwork('lan1')">
+                                <i class="fas fa-cog"></i> Yapılandır
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="network-card-header">
+                            <h3>WAN - Internet Gateway</h3>
+                            <span class="network-status-badge online">Aktif</span>
+                        </div>
+                        <div class="network-card-body">
+                            <div class="network-info-item">
+                                <i class="fas fa-globe"></i>
+                                <span>203.0.113.0/24</span>
+                            </div>
+                            <div class="network-info-item">
+                                <i class="fas fa-server"></i>
+                                <span>8 Cihaz Bağlı</span>
+                            </div>
+                            <div class="network-info-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>500 Mbps</span>
+                            </div>
+                        </div>
+                        <div class="network-card-actions">
+                            <button class="btn-network-action" onclick="NetworkManager.viewNetwork('wan1')">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </button>
+                            <button class="btn-network-action" onclick="NetworkManager.configureNetwork('wan1')">
+                                <i class="fas fa-cog"></i> Yapılandır
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="network-card">
+                        <div class="network-card-header">
+                            <h3>VPN - Remote Access</h3>
+                            <span class="network-status-badge online">Aktif</span>
+                        </div>
+                        <div class="network-card-body">
+                            <div class="network-info-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>10.8.0.0/24</span>
+                            </div>
+                            <div class="network-info-item">
+                                <i class="fas fa-users"></i>
+                                <span>4 Aktif Bağlantı</span>
+                            </div>
+                            <div class="network-info-item">
+                                <i class="fas fa-lock"></i>
+                                <span>SSL/TLS Şifreli</span>
+                            </div>
+                        </div>
+                        <div class="network-card-actions">
+                            <button class="btn-network-action" onclick="NetworkManager.viewNetwork('vpn1')">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </button>
+                            <button class="btn-network-action" onclick="NetworkManager.configureNetwork('vpn1')">
+                                <i class="fas fa-cog"></i> Yapılandır
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const NetworkManager = {
+            configureNetwork(networkType) {
+                alert(`${networkType.toUpperCase()} ağı için konfigürasyon sayfası açılıyor...`);
+            },
+
+            testNetwork(networkType) {
+                alert(`${networkType.toUpperCase()} ağı test ediliyor...`);
+            },
+
+            viewFirewallRules() {
+                alert('Güvenlik duvarı kuralları gösteriliyor...');
+            },
+
+            viewNetwork(networkId) {
+                alert(`Ağ ${networkId} detayları gösteriliyor...`);
+            },
+
+            showAddNetworkModal() {
+                alert('Yeni ağ ekleme formu açılıyor...');
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+            if (username) {
+                const usernameDisplay = document.getElementById('username-display');
+                if (usernameDisplay) usernameDisplay.textContent = username;
+            }
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('sessionId');
+                    localStorage.removeItem('username');
+                    sessionStorage.removeItem('sessionId');
+                    sessionStorage.removeItem('username');
+                    window.location.href = 'Network Manager.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

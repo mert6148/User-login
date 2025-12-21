@@ -64,5 +64,10 @@ class DashboardUserController extends AbstractController
         return $this->render('admin/dashboard.html.twig', [
             'user' => $user,
         ]);
+
+        $request = $this->authService->getCurrentRequest();
+        return $this->render('admin/dashboard.html.twig', [
+            'request' => $request,
+        ])  ;
     }
 }

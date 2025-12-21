@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Yönetimi - Network Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/Z1srPv7lOy9C27hHQ+Xp8a4MxAQ5a+V4YFE3+bkXhO/vP6l4N1ZAGC+nuZB+E1Pi6jQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="module" src="Network Manager.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="navbar" id="main-navbar">
+            <div class="nav-left">
+                <a href="Network Manager.html" class="nav-logo">
+                    <i class="fas fa-network-wired"></i>
+                    Network Manager
+                </a>
+                <a href="projects.html" class="nav-item active">Projects</a>
+                <a href="networks.html" class="nav-item">Networks</a>
+                <a href="devices.html" class="nav-item">Devices</a>
+            </div>
+            <div class="nav-right">
+                <span class="nav-user" id="current-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username-display">Kullanıcı</span>
+                </span>
+                <a href="settings.html" class="nav-item">Settings</a>
+                <a href="help.html" class="nav-item">Help</a>
+                <button class="btn-logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış
+                </button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-folder-open"></i> Proje Yönetimi</h1>
+                <p>Projeler ve kaynak konfigürasyonları</p>
+            </div>
+
+            <!-- Project Statistics -->
+            <div class="project-stats-grid">
+                <div class="project-stat-card">
+                    <div class="project-stat-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="project-stat-info">
+                        <h3>Toplam Proje</h3>
+                        <p class="project-stat-value">8</p>
+                    </div>
+                </div>
+
+                <div class="project-stat-card">
+                    <div class="project-stat-icon online">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="project-stat-info">
+                        <h3>Aktif Projeler</h3>
+                        <p class="project-stat-value">5</p>
+                    </div>
+                </div>
+
+                <div class="project-stat-card">
+                    <div class="project-stat-icon">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                    <div class="project-stat-info">
+                        <h3>Toplam Kaynak</h3>
+                        <p class="project-stat-value">24</p>
+                    </div>
+                </div>
+
+                <div class="project-stat-card">
+                    <div class="project-stat-icon warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="project-stat-info">
+                        <h3>Bekleyen Görevler</h3>
+                        <p class="project-stat-value">12</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Configuration Quick Access -->
+            <div class="project-config-section" id="project-config">
+                <h2><i class="fas fa-cog"></i> Proje Hızlı Konfigürasyonlar</h2>
+                <div class="project-config-grid">
+                    <div class="project-config-card">
+                        <div class="project-config-header">
+                            <i class="fas fa-code"></i>
+                            <h3>Geliştirme Projeleri</h3>
+                        </div>
+                        <div class="project-config-body">
+                            <p><strong>4 Proje</strong> - Aktif geliştirme</p>
+                            <div class="project-config-actions">
+                                <button class="btn-project-config" onclick="ProjectManager.configureProjects('development')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-project-config" onclick="ProjectManager.viewProjects('development')">
+                                    <i class="fas fa-list"></i> Listele
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-config-card">
+                        <div class="project-config-header">
+                            <i class="fas fa-flask"></i>
+                            <h3>Test Projeleri</h3>
+                        </div>
+                        <div class="project-config-body">
+                            <p><strong>2 Proje</strong> - Test ortamları</p>
+                            <div class="project-config-actions">
+                                <button class="btn-project-config" onclick="ProjectManager.configureProjects('testing')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-project-config" onclick="ProjectManager.viewProjects('testing')">
+                                    <i class="fas fa-list"></i> Listele
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-config-card">
+                        <div class="project-config-header">
+                            <i class="fas fa-rocket"></i>
+                            <h3>Production Projeleri</h3>
+                        </div>
+                        <div class="project-config-body">
+                            <p><strong>2 Proje</strong> - Canlı sistemler</p>
+                            <div class="project-config-actions">
+                                <button class="btn-project-config" onclick="ProjectManager.configureProjects('production')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-project-config" onclick="ProjectManager.viewProjects('production')">
+                                    <i class="fas fa-list"></i> Listele
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-config-card">
+                        <div class="project-config-header">
+                            <i class="fas fa-brain"></i>
+                            <h3>AI/ML Projeleri</h3>
+                        </div>
+                        <div class="project-config-body">
+                            <p><strong>3 Proje</strong> - Makine öğrenmesi</p>
+                            <div class="project-config-actions">
+                                <button class="btn-project-config" onclick="ProjectManager.configureProjects('ai-ml')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-project-config" onclick="ProjectManager.viewProjects('ai-ml')">
+                                    <i class="fas fa-list"></i> Listele
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project List -->
+            <div class="project-list-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Proje Listesi</h2>
+                    <button class="btn-add-project" onclick="ProjectManager.showAddProjectModal()">
+                        <i class="fas fa-plus"></i> Yeni Proje Ekle
+                    </button>
+                </div>
+
+                <div class="project-cards-grid">
+                    <div class="project-card">
+                        <div class="project-card-header">
+                            <h3>Web Application</h3>
+                            <span class="project-status-badge active">Aktif</span>
+                        </div>
+                        <div class="project-card-body">
+                            <p class="project-description">Modern web uygulaması geliştirme projesi</p>
+                            <div class="project-info-grid">
+                                <div class="project-info-item">
+                                    <i class="fas fa-code-branch"></i>
+                                    <span>5 Kaynak</span>
+                                </div>
+                                <div class="project-info-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>3 Üye</span>
+                                </div>
+                                <div class="project-info-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>2024-03-15</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-card-actions">
+                            <button class="btn-project-action" onclick="ProjectManager.viewProject('web-app')">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </button>
+                            <button class="btn-project-action" onclick="ProjectManager.configureProject('web-app')">
+                                <i class="fas fa-cog"></i> Yapılandır
+                            </button>
+                            <button class="btn-project-action" onclick="ProjectManager.editProject('web-app')">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-card-header">
+                            <h3>ML Model Training</h3>
+                            <span class="project-status-badge active">Aktif</span>
+                        </div>
+                        <div class="project-card-body">
+                            <p class="project-description">Anomali tespiti için ML model eğitimi</p>
+                            <div class="project-info-grid">
+                                <div class="project-info-item">
+                                    <i class="fas fa-code-branch"></i>
+                                    <span>8 Kaynak</span>
+                                </div>
+                                <div class="project-info-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>2 Üye</span>
+                                </div>
+                                <div class="project-info-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>2024-02-20</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-card-actions">
+                            <button class="btn-project-action" onclick="ProjectManager.viewProject('ml-training')">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </button>
+                            <button class="btn-project-action" onclick="ProjectManager.configureProject('ml-training')">
+                                <i class="fas fa-cog"></i> Yapılandır
+                            </button>
+                            <button class="btn-project-action" onclick="ProjectManager.editProject('ml-training')">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-card-header">
+                            <h3>API Gateway</h3>
+                            <span class="project-status-badge paused">Duraklatıldı</span>
+                        </div>
+                        <div class="project-card-body">
+                            <p class="project-description">Merkezi API yönetim sistemi</p>
+                            <div class="project-info-grid">
+                                <div class="project-info-item">
+                                    <i class="fas fa-code-branch"></i>
+                                    <span>6 Kaynak</span>
+                                </div>
+                                <div class="project-info-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>4 Üye</span>
+                                </div>
+                                <div class="project-info-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>2024-01-10</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-card-actions">
+                            <button class="btn-project-action" onclick="ProjectManager.viewProject('api-gateway')">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </button>
+                            <button class="btn-project-action" onclick="ProjectManager.configureProject('api-gateway')">
+                                <i class="fas fa-cog"></i> Yapılandır
+                            </button>
+                            <button class="btn-project-action" onclick="ProjectManager.editProject('api-gateway')">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ProjectManager = {
+            configureProjects(category) {
+                alert(`${category} kategorisindeki projeler için konfigürasyon sayfası açılıyor...`);
+            },
+
+            viewProjects(category) {
+                alert(`${category} kategorisindeki projeler listeleniyor...`);
+            },
+
+            viewProject(projectId) {
+                alert(`Proje ${projectId} detayları gösteriliyor...`);
+            },
+
+            configureProject(projectId) {
+                alert(`Proje ${projectId} yapılandırma sayfası açılıyor...`);
+            },
+
+            editProject(projectId) {
+                alert(`Proje ${projectId} düzenleme sayfası açılıyor...`);
+            },
+
+            showAddProjectModal() {
+                alert('Yeni proje ekleme formu açılıyor...');
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+            if (username) {
+                const usernameDisplay = document.getElementById('username-display');
+                if (usernameDisplay) usernameDisplay.textContent = username;
+            }
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('sessionId');
+                    localStorage.removeItem('username');
+                    sessionStorage.removeItem('sessionId');
+                    sessionStorage.removeItem('username');
+                    window.location.href = 'Network Manager.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

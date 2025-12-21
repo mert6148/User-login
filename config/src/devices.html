@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cihaz Yönetimi - Network Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/Z1srPv7lOy9C27hHQ+Xp8a4MxAQ5a+V4YFE3+bkXhO/vP6l4N1ZAGC+nuZB+E1Pi6jQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="module" src="Network Manager.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="navbar" id="main-navbar">
+            <div class="nav-left">
+                <a href="Network Manager.html" class="nav-logo">
+                    <i class="fas fa-network-wired"></i>
+                    Network Manager
+                </a>
+                <a href="projects.html" class="nav-item">Projects</a>
+                <a href="networks.html" class="nav-item">Networks</a>
+                <a href="devices.html" class="nav-item active">Devices</a>
+            </div>
+            <div class="nav-right">
+                <span class="nav-user" id="current-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username-display">Kullanıcı</span>
+                </span>
+                <a href="settings.html" class="nav-item">Settings</a>
+                <a href="help.html" class="nav-item">Help</a>
+                <button class="btn-logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış
+                </button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-server"></i> Cihaz Yönetimi</h1>
+                <p>OS ve cihaz konfigürasyonları için hızlı erişim</p>
+            </div>
+
+            <!-- Device Statistics -->
+            <div class="device-stats-grid">
+                <div class="device-stat-card">
+                    <div class="device-stat-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="device-stat-info">
+                        <h3>Toplam Cihaz</h3>
+                        <p class="device-stat-value">12</p>
+                    </div>
+                </div>
+
+                <div class="device-stat-card">
+                    <div class="device-stat-icon online">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="device-stat-info">
+                        <h3>Aktif Cihazlar</h3>
+                        <p class="device-stat-value">10</p>
+                    </div>
+                </div>
+
+                <div class="device-stat-card">
+                    <div class="device-stat-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="device-stat-info">
+                        <h3>Bakım Gereken</h3>
+                        <p class="device-stat-value">2</p>
+                    </div>
+                </div>
+
+                <div class="device-stat-card">
+                    <div class="device-stat-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="device-stat-info">
+                        <h3>Ortalama CPU</h3>
+                        <p class="device-stat-value">45%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OS Configuration Quick Access -->
+            <div class="os-config-section" id="os-config">
+                <h2><i class="fas fa-cog"></i> OS Hızlı Konfigürasyonlar</h2>
+                <div class="os-config-grid">
+                    <div class="os-config-card">
+                        <div class="os-config-header">
+                            <i class="fab fa-linux"></i>
+                            <h3>Linux Sistemler</h3>
+                        </div>
+                        <div class="os-config-body">
+                            <p><strong>5 Cihaz</strong> - Ubuntu, CentOS, Debian</p>
+                            <div class="os-config-actions">
+                                <button class="btn-os-config" onclick="DeviceManager.configureOS('linux')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-os-config" onclick="DeviceManager.updateOS('linux')">
+                                    <i class="fas fa-sync"></i> Güncelle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="os-config-card">
+                        <div class="os-config-header">
+                            <i class="fab fa-windows"></i>
+                            <h3>Windows Sistemler</h3>
+                        </div>
+                        <div class="os-config-body">
+                            <p><strong>4 Cihaz</strong> - Windows Server 2019/2022</p>
+                            <div class="os-config-actions">
+                                <button class="btn-os-config" onclick="DeviceManager.configureOS('windows')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-os-config" onclick="DeviceManager.updateOS('windows')">
+                                    <i class="fas fa-sync"></i> Güncelle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="os-config-card">
+                        <div class="os-config-header">
+                            <i class="fab fa-apple"></i>
+                            <h3>macOS Sistemler</h3>
+                        </div>
+                        <div class="os-config-body">
+                            <p><strong>2 Cihaz</strong> - macOS Monterey, Ventura</p>
+                            <div class="os-config-actions">
+                                <button class="btn-os-config" onclick="DeviceManager.configureOS('macos')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-os-config" onclick="DeviceManager.updateOS('macos')">
+                                    <i class="fas fa-sync"></i> Güncelle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="os-config-card">
+                        <div class="os-config-header">
+                            <i class="fas fa-cloud"></i>
+                            <h3>Container Sistemler</h3>
+                        </div>
+                        <div class="os-config-body">
+                            <p><strong>1 Cihaz</strong> - Docker, Kubernetes</p>
+                            <div class="os-config-actions">
+                                <button class="btn-os-config" onclick="DeviceManager.configureOS('container')">
+                                    <i class="fas fa-sliders-h"></i> Yapılandır
+                                </button>
+                                <button class="btn-os-config" onclick="DeviceManager.updateOS('container')">
+                                    <i class="fas fa-sync"></i> Güncelle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device List -->
+            <div class="device-list-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Cihaz Listesi</h2>
+                    <button class="btn-add-device" onclick="DeviceManager.showAddDeviceModal()">
+                        <i class="fas fa-plus"></i> Yeni Cihaz Ekle
+                    </button>
+                </div>
+
+                <div class="device-table-container">
+                    <table class="device-table">
+                        <thead>
+                            <tr>
+                                <th>Cihaz Adı</th>
+                                <th>IP Adresi</th>
+                                <th>OS</th>
+                                <th>Durum</th>
+                                <th>CPU</th>
+                                <th>RAM</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="device-table-body">
+                            <tr>
+                                <td>
+                                    <div class="device-name-cell">
+                                        <i class="fas fa-server"></i>
+                                        <span>Web Server 01</span>
+                                    </div>
+                                </td>
+                                <td>192.168.1.10</td>
+                                <td><span class="os-badge linux">Ubuntu 22.04</span></td>
+                                <td><span class="status-badge online">Online</span></td>
+                                <td>35%</td>
+                                <td>62%</td>
+                                <td>
+                                    <div class="device-actions">
+                                        <button class="btn-action-small" onclick="DeviceManager.viewDevice('1')" title="Görüntüle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-action-small" onclick="DeviceManager.configureDevice('1')" title="Yapılandır">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <button class="btn-action-small danger" onclick="DeviceManager.deleteDevice('1')" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="device-name-cell">
+                                        <i class="fas fa-database"></i>
+                                        <span>Database Server</span>
+                                    </div>
+                                </td>
+                                <td>192.168.1.20</td>
+                                <td><span class="os-badge linux">CentOS 8</span></td>
+                                <td><span class="status-badge online">Online</span></td>
+                                <td>68%</td>
+                                <td>85%</td>
+                                <td>
+                                    <div class="device-actions">
+                                        <button class="btn-action-small" onclick="DeviceManager.viewDevice('2')" title="Görüntüle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-action-small" onclick="DeviceManager.configureDevice('2')" title="Yapılandır">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <button class="btn-action-small danger" onclick="DeviceManager.deleteDevice('2')" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="device-name-cell">
+                                        <i class="fas fa-cloud"></i>
+                                        <span>App Server 01</span>
+                                    </div>
+                                </td>
+                                <td>192.168.1.30</td>
+                                <td><span class="os-badge windows">Windows Server 2022</span></td>
+                                <td><span class="status-badge online">Online</span></td>
+                                <td>42%</td>
+                                <td>58%</td>
+                                <td>
+                                    <div class="device-actions">
+                                        <button class="btn-action-small" onclick="DeviceManager.viewDevice('3')" title="Görüntüle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-action-small" onclick="DeviceManager.configureDevice('3')" title="Yapılandır">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <button class="btn-action-small danger" onclick="DeviceManager.deleteDevice('3')" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DeviceManager = {
+            configureOS(osType) {
+                alert(`${osType.toUpperCase()} sistemleri için konfigürasyon sayfası açılıyor...`);
+                // Implement OS configuration logic
+            },
+
+            updateOS(osType) {
+                if (confirm(`${osType.toUpperCase()} sistemlerini güncellemek istediğinizden emin misiniz?`)) {
+                    alert(`${osType.toUpperCase()} güncellemesi başlatıldı...`);
+                }
+            },
+
+            viewDevice(deviceId) {
+                alert(`Cihaz ${deviceId} detayları gösteriliyor...`);
+            },
+
+            configureDevice(deviceId) {
+                alert(`Cihaz ${deviceId} yapılandırma sayfası açılıyor...`);
+            },
+
+            deleteDevice(deviceId) {
+                if (confirm('Bu cihazı silmek istediğinizden emin misiniz?')) {
+                    alert(`Cihaz ${deviceId} siliniyor...`);
+                }
+            },
+
+            showAddDeviceModal() {
+                alert('Yeni cihaz ekleme formu açılıyor...');
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+            if (username) {
+                const usernameDisplay = document.getElementById('username-display');
+                if (usernameDisplay) usernameDisplay.textContent = username;
+            }
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('sessionId');
+                    localStorage.removeItem('username');
+                    sessionStorage.removeItem('sessionId');
+                    sessionStorage.removeItem('username');
+                    window.location.href = 'Network Manager.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

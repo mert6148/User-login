@@ -36,3 +36,12 @@ def assert_equal(cls, a, b, msg=""):
     if a != b:
         full_msg = f"Assertion failed: {a} != {b}. {msg}"
         cls.fail(full_msg)
+
+def assert_not_equal(cls, a, b, msg=""):
+    if a == b:
+        full_msg = f"Assertion failed: {a} == {b}. {msg}"
+        cls.fail(full_msg)
+
+def v4_int_to_packed(address):
+    import ipaddress
+    return ipaddress.IPv4Address(address).packed

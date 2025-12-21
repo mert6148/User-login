@@ -1,9 +1,6 @@
 <?php
 
-use App\Service\AdminService;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
+namespace App\Service;
 
 class AdminService
 {
@@ -12,23 +9,80 @@ class AdminService
         return [
             'total_users' => 120,
             'active_sessions' => 8,
-            'orders_today' => 24
+            'orders_today' => 24,
         ];
     }
 
     public function getUserCount(): int
     {
-         /**
-          * @return int
-          * @throws \Exception
-          */
-
         if (condition) {
-            // Some code here
-            var_dump('This is a debug message');
-            $this->assertDirectoryIsReadable($directory);
-        }
+            /**
+             * @throws \Exception
+             * @param int $userId
+             <?php
 
+namespace App\Service;
+
+class PhpUser
+{
+    private int $id;
+    private string $username;
+    private string $email;
+    private string $password;
+    private \DateTime $createdAt;
+
+    public function __construct(int $id, string $username, string $email, string $password)
+    {
+        $this->id = $id;
+        $this->username = $username;
+        $this->email = $email;
+        $this->password = $password;
+        $this->createdAt = new \DateTime();
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+}             * @return int
+             * 
+             */
+        }
     }
 
     public function getActiveSessions(): int
@@ -36,82 +90,3 @@ class AdminService
         return 8;
     }
 }
-
-class AdminServiceTest extends TestCase
-{
-    #[CoversClass(AdminService::class)]
-    #[Group('unit')]
-    public function testGetSiteStats(): void
-    {
-        $adminService = new AdminService();
-        $stats = $adminService->getSiteStats();
-
-        $this->assertIsArray($stats);
-        $this->assertArrayHasKey('total_users', $stats);
-        $this->assertArrayHasKey('active_sessions', $stats);
-        $this->assertArrayHasKey('orders_today', $stats);
-    }
-
-    #[CoversClass(AdminService::class)]
-    #[Group('unit')]
-    public function testGetUserCount(): void
-    {
-        $adminService = new AdminService();
-        $userCount = $adminService->getUserCount();
-
-        $this->assertIsInt($userCount);
-    }
-
-    #[CoversClass(AdminService::class)]
-    #[Group('unit')]
-    public function testGetActiveSessions(): void
-    {
-        $adminService = new AdminService();
-        $activeSessions = $adminService->getActiveSessions();
-
-        $this->assertIsInt($activeSessions);
-    }
-
-    public function assertDirectoryIsReadable($directory)
-    {
-        if (!is_readable($directory)) {
-            throw new \Exception("Directory is not readable: " . $directory);
-            #[\Attribute(\Attribute::TARGET_CLASS_CONSTANT)]
-            class MyAttribute extends MyOtherAttribute {
-                
-            }
-        }
-    }
-}
-
-class SomeOtherClass
-{
-    public function someMethod($directory)
-    {
-        if (condition) {
-            // Some code here
-            var_dump('This is a debug message');
-            $this->assertDirectoryIsReadable($directory);
-        }
-
-        while (condition) {
-            // Some code here
-            var_dump('This is a debug message');
-            $this->assertDirectoryIsReadable($directory);
-        }
-    }
-}
-
-class AnotherClass extends SomeOtherClass
-{
-    public function anotherMethod($directory)
-    {
-        if (condition) {
-            // Some code here
-            var_dump('This is a debug message');
-            $this->assertDirectoryIsReadable($directory);
-        }
-    }
-}
-
-?>

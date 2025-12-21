@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Manager - Kullanıcı Girişi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/Z1srPv7lOy9C27hHQ+Xp8a4MxAQ5a+V4YFE3+bkXhO/vP6l4N1ZAGC+nuZB+E1Pi6jQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <script type="module" src="Network Manager.js"></script>
+</head>
+<body>
+    <!-- Login Form Container -->
+    <div id="login-container" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fas fa-network-wired"></i>
+                <h1>Network Manager</h1>
+                <p>Kullanıcı Girişi</p>
+            </div>
+            
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i>
+                        Kullanıcı Adı
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        required 
+                        autocomplete="username"
+                        placeholder="Kullanıcı adınızı girin"
+                    >
+                    <span class="error-message" id="username-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Şifre
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        autocomplete="current-password"
+                        placeholder="Şifrenizi girin"
+                    >
+                    <span class="error-message" id="password-error"></span>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="remember-me" name="remember-me">
+                        <span>Beni hatırla</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-login" id="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Giriş Yap
+                </button>
+
+                <div class="login-footer">
+                    <a href="#" id="forgot-password">Şifremi Unuttum</a>
+                </div>
+            </form>
+
+            <div id="login-alert" class="alert-box" style="display: none;">
+                <button type="button" class="closebtn" aria-label="Kapat" onclick="this.parentElement.style.display='none';" onKeyPress="if(event.key==='Enter'||event.key===' '){this.parentElement.style.display='none';}">&times;</button>
+                <strong id="alert-message"></strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard (hidden until login) -->
+    <div id="dashboard-container" class="dashboard-container" style="display: none;">
+        <nav class="navbar" id="main-navbar">
+            <div class="nav-left">
+                <a href="#" class="nav-logo">
+                    <i class="fas fa-network-wired"></i>
+                    Network Manager
+                </a>
+                <a href="projects.html" class="nav-item">Projects</a>
+                <a href="networks.html" class="nav-item">Networks</a>
+                <a href="devices.html" class="nav-item">Devices</a>
+            </div>
+            <div class="nav-right">
+                <span class="nav-user" id="current-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username-display"></span>
+                </span>
+                <a href="settings.html" class="nav-item">Settings</a>
+                <a href="help.html" class="nav-item">Help</a>
+                <button class="btn-logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış
+                </button>
+            </div>
+        </nav>
+
+        <div class="content" id="main-content">
+            <div class="dashboard-header">
+                <h2>Network Dashboard</h2>
+                <p>Hoş geldiniz, <span id="welcome-username"></span>!</p>
+            </div>
+
+            <div class="network-status-grid">
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Ağ Durumu</h3>
+                        <p id="network-status">Kontrol ediliyor...</p>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Sunucu Durumu</h3>
+                        <p id="server-status">Kontrol ediliyor...</p>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Güvenlik Kontrolü</h3>
+                        <p id="security-status">Kontrol ediliyor...</p>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>ML Analiz</h3>
+                        <p id="ml-status">Hazır</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ml-controls-section">
+                <div class="ml-header">
+                    <h3><i class="fas fa-brain"></i> ML Kontrolleri</h3>
+                    <a href="settings.html" class="btn-config-link">
+                        <i class="fas fa-cog"></i>
+                        Konfigürasyon
+                    </a>
+                </div>
+
+                <!-- ML Status Overview -->
+                <div class="ml-status-overview">
+                    <div class="ml-status-item">
+                        <span class="ml-status-label">Servis Durumu:</span>
+                        <span class="ml-status-value" id="ml-service-status">Aktif</span>
+                    </div>
+                    <div class="ml-status-item">
+                        <span class="ml-status-label">Aktif Modeller:</span>
+                        <span class="ml-status-value" id="ml-active-models">2/3</span>
+                    </div>
+                    <div class="ml-status-item">
+                        <span class="ml-status-label">Son Analiz:</span>
+                        <span class="ml-status-value" id="ml-last-analysis">-</span>
+                    </div>
+                </div>
+
+                <!-- ML Control Buttons -->
+                <div class="ml-controls">
+                    <button class="btn-ml" id="ml-analyze-btn">
+                        <i class="fas fa-brain"></i>
+                        <span>Ağ Analizi Başlat</span>
+                    </button>
+                    <button class="btn-ml" id="ml-predict-btn">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Tahmin Yap</span>
+                    </button>
+                    <button class="btn-ml" id="ml-train-btn">
+                        <i class="fas fa-cog"></i>
+                        <span>Model Eğitimi</span>
+                    </button>
+                    <button class="btn-ml" id="ml-realtime-btn">
+                        <i class="fas fa-stream"></i>
+                        <span>Gerçek Zamanlı Analiz</span>
+                    </button>
+                </div>
+
+                <!-- ML Configuration Quick Access -->
+                <div class="ml-quick-config">
+                    <h4><i class="fas fa-sliders-h"></i> Hızlı Ayarlar</h4>
+                    <div class="quick-config-grid">
+                        <div class="quick-config-item">
+                            <label>
+                                <input type="checkbox" id="quick-auto-analysis" checked>
+                                <span>Otomatik Analiz</span>
+                            </label>
+                        </div>
+                        <div class="quick-config-item">
+                            <label>
+                                <input type="checkbox" id="quick-deep-analysis">
+                                <span>Derin Analiz</span>
+                            </label>
+                        </div>
+                        <div class="quick-config-item">
+                            <label>
+                                <input type="checkbox" id="quick-anomaly-alerts" checked>
+                                <span>Anomali Uyarıları</span>
+                            </label>
+                        </div>
+                        <div class="quick-config-item">
+                            <label>
+                                <input type="checkbox" id="quick-realtime-monitoring">
+                                <span>Gerçek Zamanlı İzleme</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ML Results Display -->
+                <div id="ml-results" class="ml-results"></div>
+
+                <!-- ML Model Status -->
+                <div class="ml-models-status">
+                    <h4><i class="fas fa-robot"></i> Model Durumları</h4>
+                    <div class="models-status-grid" id="models-status-grid">
+                        <!-- Models will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

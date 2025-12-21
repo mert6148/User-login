@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yardım & Dokümantasyon - Network Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/Z1srPv7lOy9C27hHQ+Xp8a4MxAQ5a+V4YFE3+bkXhO/vP6l4N1ZAGC+nuZB+E1Pi6jQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="module" src="Network Manager.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="navbar" id="main-navbar">
+            <div class="nav-left">
+                <a href="Network Manager.html" class="nav-logo">
+                    <i class="fas fa-network-wired"></i>
+                    Network Manager
+                </a>
+                <a href="projects.html" class="nav-item">Projects</a>
+                <a href="networks.html" class="nav-item">Networks</a>
+                <a href="devices.html" class="nav-item">Devices</a>
+            </div>
+            <div class="nav-right">
+                <span class="nav-user" id="current-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username-display">Kullanıcı</span>
+                </span>
+                <a href="settings.html" class="nav-item">Settings</a>
+                <a href="help.html" class="nav-item active">Help</a>
+                <button class="btn-logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Çıkış
+                </button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-question-circle"></i> Yardım & Dokümantasyon</h1>
+                <p>Kullanım kılavuzu ve destek kaynakları</p>
+            </div>
+
+            <!-- Quick Help Links -->
+            <div class="help-quick-links">
+                <h2><i class="fas fa-bolt"></i> Hızlı Erişim</h2>
+                <div class="help-links-grid">
+                    <a href="#getting-started" class="help-link-card">
+                        <i class="fas fa-rocket"></i>
+                        <h3>Başlangıç Kılavuzu</h3>
+                        <p>Sisteme hızlı başlangıç yapın</p>
+                    </a>
+
+                    <a href="#ai-config" class="help-link-card">
+                        <i class="fas fa-brain"></i>
+                        <h3>AI/ML Konfigürasyonu</h3>
+                        <p>Makine öğrenmesi ayarları</p>
+                    </a>
+
+                    <a href="#os-config" class="help-link-card">
+                        <i class="fas fa-server"></i>
+                        <h3>OS Yapılandırması</h3>
+                        <p>İşletim sistemi ayarları</p>
+                    </a>
+
+                    <a href="#network-config" class="help-link-card">
+                        <i class="fas fa-network-wired"></i>
+                        <h3>Ağ Yönetimi</h3>
+                        <p>Ağ konfigürasyon rehberi</p>
+                    </a>
+
+                    <a href="#troubleshooting" class="help-link-card">
+                        <i class="fas fa-tools"></i>
+                        <h3>Sorun Giderme</h3>
+                        <p>Yaygın sorunlar ve çözümler</p>
+                    </a>
+
+                    <a href="#api-docs" class="help-link-card">
+                        <i class="fas fa-code"></i>
+                        <h3>API Dokümantasyonu</h3>
+                        <p>API referans ve örnekler</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Help Sections -->
+            <div class="help-sections">
+                <!-- Getting Started -->
+                <div class="help-section" id="getting-started">
+                    <h2><i class="fas fa-rocket"></i> Başlangıç Kılavuzu</h2>
+                    <div class="help-content">
+                        <h3>İlk Adımlar</h3>
+                        <ol>
+                            <li>Network Manager'a giriş yapın</li>
+                            <li>Ana dashboard'dan sistem durumunu kontrol edin</li>
+                            <li>Settings sayfasından ML konfigürasyonlarını yapın</li>
+                            <li>Cihazlarınızı ekleyin ve yapılandırın</li>
+                            <li>Ağ bağlantılarınızı oluşturun</li>
+                        </ol>
+
+                        <h3>Hızlı Konfigürasyon</h3>
+                        <p>AI/OS konfigürasyonları için hızlı erişim:</p>
+                        <ul>
+                            <li><strong>ML Ayarları:</strong> Settings → Model Yönetimi</li>
+                            <li><strong>OS Ayarları:</strong> Devices → OS Konfigürasyonları</li>
+                            <li><strong>Ağ Ayarları:</strong> Networks → Ağ Konfigürasyonları</li>
+                            <li><strong>Proje Ayarları:</strong> Projects → Proje Konfigürasyonları</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- AI Configuration -->
+                <div class="help-section" id="ai-config">
+                    <h2><i class="fas fa-brain"></i> AI/ML Konfigürasyonu</h2>
+                    <div class="help-content">
+                        <h3>ML Model Yönetimi</h3>
+                        <p>Makine öğrenmesi modellerini yönetmek için:</p>
+                        <ol>
+                            <li>Settings sayfasına gidin</li>
+                            <li>"Model Yönetimi" sekmesini seçin</li>
+                            <li>Yeni model yüklemek için drag & drop kullanın</li>
+                            <li>Mevcut modelleri test edin veya güncelleyin</li>
+                        </ol>
+
+                        <h3>Analiz Parametreleri</h3>
+                        <p>ML analiz parametrelerini ayarlamak için:</p>
+                        <ul>
+                            <li><strong>Anomali Eşik Değeri:</strong> Anomali tespiti için minimum skor</li>
+                            <li><strong>Güven Seviyesi:</strong> Tahminler için minimum güven yüzdesi</li>
+                            <li><strong>Tahmin Penceresi:</strong> Tahmin yapılacak zaman aralığı</li>
+                            <li><strong>Derin Analiz:</strong> Daha detaylı analiz modu</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- OS Configuration -->
+                <div class="help-section" id="os-config">
+                    <h2><i class="fas fa-server"></i> OS Yapılandırması</h2>
+                    <div class="help-content">
+                        <h3>İşletim Sistemi Ayarları</h3>
+                        <p>Farklı işletim sistemleri için konfigürasyon:</p>
+                        
+                        <h4>Linux Sistemler</h4>
+                        <ul>
+                            <li>Ubuntu, CentOS, Debian desteği</li>
+                            <li>Paket yönetimi ve güncellemeler</li>
+                            <li>Servis yönetimi ve otomasyon</li>
+                        </ul>
+
+                        <h4>Windows Sistemler</h4>
+                        <ul>
+                            <li>Windows Server 2019/2022 desteği</li>
+                            <li>PowerShell script yönetimi</li>
+                            <li>Grup politikaları ve güvenlik</li>
+                        </ul>
+
+                        <h4>macOS Sistemler</h4>
+                        <ul>
+                            <li>macOS Monterey ve Ventura desteği</li>
+                            <li>Homebrew paket yönetimi</li>
+                            <li>Sistem tercihleri yönetimi</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Network Configuration -->
+                <div class="help-section" id="network-config">
+                    <h2><i class="fas fa-network-wired"></i> Ağ Yönetimi</h2>
+                    <div class="help-content">
+                        <h3>Ağ Konfigürasyonu</h3>
+                        <p>Ağ yönetimi ve konfigürasyon rehberi:</p>
+                        
+                        <h4>LAN Konfigürasyonu</h4>
+                        <ul>
+                            <li>Yerel ağ IP adresi yönetimi</li>
+                            <li>Subnet mask ve gateway ayarları</li>
+                            <li>DHCP ve DNS konfigürasyonu</li>
+                        </ul>
+
+                        <h4>WAN Konfigürasyonu</h4>
+                        <ul>
+                            <li>Geniş alan ağı bağlantıları</li>
+                            <li>Bant genişliği yönetimi</li>
+                            <li>Yönlendirme ve NAT ayarları</li>
+                        </ul>
+
+                        <h4>VPN Konfigürasyonu</h4>
+                        <ul>
+                            <li>SSL/TLS VPN kurulumu</li>
+                            <li>Uzak erişim yapılandırması</li>
+                            <li>Güvenlik protokolleri</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Troubleshooting -->
+                <div class="help-section" id="troubleshooting">
+                    <h2><i class="fas fa-tools"></i> Sorun Giderme</h2>
+                    <div class="help-content">
+                        <h3>Yaygın Sorunlar ve Çözümler</h3>
+                        
+                        <div class="troubleshooting-item">
+                            <h4><i class="fas fa-exclamation-triangle"></i> ML Servisi Başlamıyor</h4>
+                            <p><strong>Çözüm:</strong> Settings → Genel Ayarlar → ML Servis Durumu'nu kontrol edin ve gerekirse yeniden başlatın.</p>
+                        </div>
+
+                        <div class="troubleshooting-item">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Cihaz Bağlantı Hatası</h4>
+                            <p><strong>Çözüm:</strong> Cihazın IP adresini ve ağ bağlantısını kontrol edin. Firewall kurallarını gözden geçirin.</p>
+                        </div>
+
+                        <div class="troubleshooting-item">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Model Yükleme Hatası</h4>
+                            <p><strong>Çözüm:</strong> Model dosyasının formatını (.h5, .pkl, .onnx, .pb) ve boyutunu (max 500MB) kontrol edin.</p>
+                        </div>
+
+                        <div class="troubleshooting-item">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Ağ Performans Sorunları</h4>
+                            <p><strong>Çözüm:</strong> Bant genişliği kullanımını kontrol edin ve gerektiğinde QoS ayarlarını yapılandırın.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Documentation -->
+                <div class="help-section" id="api-docs">
+                    <h2><i class="fas fa-code"></i> API Dokümantasyonu</h2>
+                    <div class="help-content">
+                        <h3>REST API Endpoints</h3>
+                        <p>Network Manager API'sini kullanarak sistem yönetimi yapabilirsiniz:</p>
+                        
+                        <div class="api-endpoint">
+                            <code>GET /api/v1/health</code>
+                            <p>Sistem sağlık durumunu kontrol eder</p>
+                        </div>
+
+                        <div class="api-endpoint">
+                            <code>POST /api/v1/auth/login</code>
+                            <p>Kullanıcı girişi yapar</p>
+                        </div>
+
+                        <div class="api-endpoint">
+                            <code>GET /api/v1/devices</code>
+                            <p>Tüm cihazları listeler</p>
+                        </div>
+
+                        <div class="api-endpoint">
+                            <code>GET /api/v1/networks</code>
+                            <p>Ağ yapılandırmalarını listeler</p>
+                        </div>
+
+                        <h3>Örnek Kullanım</h3>
+                        <pre class="code-block"><code>// Health check
+fetch('http://localhost:5000/api/v1/health')
+  .then(response => response.json())
+  .then(data => console.log(data));
+
+// Device list
+fetch('http://localhost:5000/api/v1/devices', {
+  headers: {
+    'Authorization': 'Bearer YOUR_TOKEN'
+  }
+})
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Support -->
+            <div class="support-section">
+                <h2><i class="fas fa-headset"></i> Destek</h2>
+                <div class="support-content">
+                    <p>Daha fazla yardıma mı ihtiyacınız var?</p>
+                    <div class="support-actions">
+                        <a href="mailto:support@networkmanager.com" class="btn-support">
+                            <i class="fas fa-envelope"></i> E-posta Gönder
+                        </a>
+                        <button type="button" class="btn-support" onclick="alert('Canlı destek yakında eklenecek')">
+                            <i class="fas fa-comments"></i> Canlı Destek
+                        </button>
+                        <button type="button" class="btn-support" onclick="alert('Dokümantasyon sayfası yakında eklenecek')">
+                            <i class="fas fa-book"></i> Detaylı Dokümantasyon
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+            if (username) {
+                const usernameDisplay = document.getElementById('username-display');
+                if (usernameDisplay) usernameDisplay.textContent = username;
+            }
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('sessionId');
+                    localStorage.removeItem('username');
+                    sessionStorage.removeItem('sessionId');
+                    sessionStorage.removeItem('username');
+                    globalThis.location.href = 'Network Manager.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

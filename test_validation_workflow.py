@@ -111,7 +111,7 @@ def test_single_validation():
     
     print(f"\n{'-' * 70}")
     print(f"Sonuç: {passed} Geçti, {failed} Başarısız")
-    return failed == 0
+    assert failed == 0, f"{failed} test failed in single validation"
 
 
 def test_batch_validation():
@@ -160,14 +160,8 @@ def test_batch_validation():
     print(f"\nDoğrulama başlatılıyor...")
     all_valid, errors = validate_user_assets_batch(manager, test_assets)
     
-    if all_valid:
-        print(f"✓ Tüm {total_assets} varlık başarıyla doğrulandı!")
-        return True
-    else:
-        print(f"✗ {len(errors)} hata bulundu:")
-        for error in errors:
-            print(f"  - {error}")
-        return False
+    assert all_valid, f"Batch validation failed with errors: {errors}"
+    print(f"✓ Tüm {total_assets} varlık başarıyla doğrulandı!")
 
 
 def test_save_and_retrieve():
@@ -235,8 +229,8 @@ def test_save_and_retrieve():
     
     # Temizle
     manager.delete_all_assets(user_id)
-    
-    return retrieved_count > 0
+
+    assert retrieved_count > 0, "No assets were retrieved after save and retrieve"
 
 
 def test_error_handling():
@@ -268,6 +262,7 @@ def test_error_handling():
     ]
     
     print(f"\n{len(invalid_tests)} hata testi yapılıyor...")
+    any_error_detected = False
     
     # If döngüsü ile hataları test et
     for i, test in enumerate(invalid_tests, 1):
@@ -286,15 +281,18 @@ def test_error_handling():
                         print(f"  ✓ Hata tespit edildi: {error}")
                         has_errors = True
         
-        if not has_errors:
+        if has_errors:
+            any_error_detected = True
+        else:
             # Toplu doğrulama ile hata kontrolü
             all_valid, errors = validate_user_assets_batch(manager, test["data"])
             if not all_valid:
                 print(f"  ✓ {len(errors)} hata tespit edildi")
+                any_error_detected = True
             else:
                 print(f"  ✗ Hata tespit edilemedi")
     
-    return True
+    assert any_error_detected, "No expected errors were detected in error handling tests"
 
 
 def test_if_loop_patterns():
@@ -369,8 +367,8 @@ def test_if_loop_patterns():
     
     if not error_found:
         print(f"  ✓ Hata bulunmadı")
-    
-    return True
+
+    assert total > 0, "No assets found in if loop patterns test"
 
 
 def main():

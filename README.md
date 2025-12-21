@@ -4,6 +4,18 @@
 - 💞️ I’m looking to collaborate on ...
 - 📫 How to reach me ...
 
+[![CI](https://github.com/mert6148/User-login/actions/workflows/ci.yml/badge.svg)](https://github.com/mert6148/User-login/actions/workflows/ci.yml)
+
+## Continuous Integration (GitHub Actions)
+
+This repository's CI (`.github/workflows/ci.yml`) runs on pushes and pull requests to `main` and `project-main`. The workflow now:
+
+- Runs `pytest` and emits `artifacts/pytest-report.xml` and `artifacts/coverage.xml` (and an HTML coverage report in `artifacts/coverage-html/`).
+- Runs `python verify_workflow.py --all --report-format junit` to emit `artifacts/verify-report.xml`.
+- Uploads all generated XML and coverage artifacts as the `test-reports` workflow artifact.
+
+You can view and download coverage reports from the CI artifacts after a workflow run.
+
 ## Managing Dashboard Users
 
 This project includes a lightweight CLI for managing the dashboard user database (SQLite) and a PowerShell wrapper for convenience.
