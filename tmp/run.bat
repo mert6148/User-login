@@ -24,6 +24,19 @@ REM =============================================================
     call pause
 )
 
+REM =============================================================
+REM ===================  GET KONTROLÜ  =====================
+REM =============================================================
+(
+    start "" python %~dp0src/main.py
+    continue=0
+    echo [REM] Press any key to exit...
+    echo [REM] Application has exited.
+    call pause 
+)
+
+
+
 echo [REM] tmp PYTHONPATH after execution: %PYTHONPATH%
 echo [REM] tmp LOCALAPPDATA after execution: %LOCALAPPDATA%
 echo [REM] tmp APPDATA after execution: %APPDATA%
