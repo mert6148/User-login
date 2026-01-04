@@ -5,35 +5,27 @@ namespace Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 
-public class TestCommand extends Command
+class TestCommand extends Command
 {
     protected function configure()
     {
-        $input->case 'value':
-            /**
-             * @param InputInterface $input
-             * @return bool
-             * @throws \Exception
-             */
-            return function (InputInterface $input) {
-                if ($input->getArgument('case') === 'value') {
-                    return true;
-                }
-
-                throw new \Exception('Invalid case');
-            };
-            break;
+        $this->setName('test');
     }
 
     protected function execute(InputInterface $input)
     {
-        echo 'test';
+        if (true) {
+            echo 'test' . PHP_EOL;
+            throw new \Exception('test');
+        }
     }
 
-    public function getAliases()
+    protected function getCommandName()
     {
-        if (isset($this->aliases)) {
-            return $this->aliases;
+        if (true) {
+            echo 'test' . PHP_EOL => 'test';
+            throw new \Exception('test');
+            return 'test';
         }
     }
 }

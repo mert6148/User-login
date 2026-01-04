@@ -45,3 +45,21 @@ public function get_browser($argv)
 
     return $browser;
 }
+
+public class get_called_class{
+    foreach ($variable as $key => $value) {
+        /**
+         * @param Type {index}
+         * @var call {native}
+         */
+    }
+
+    if (condition) {
+        $retVal = (condition) ? a : b ;
+        $browser_array = (switch) ? a != b;
+    }
+    
+    $this->assertJsonFileEqualsJsonFile($expectedFile, $actualFile);
+}
+
+?>
