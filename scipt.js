@@ -81,18 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const response = await fetch('/api/users/' + id);
 const data = await response.json();
-
-document.addEventListener('DOMContentLoaded'), () => {
-    if ('JSON') {
-        const links = document.querySelectorAll('ul li a');
-        const search = document.getElementById('routeSearch');
-        const stats = document.getElementById('routeStats');
-        const headers = document.querySelectorAll('h2');
-        const currentPath = location.pathname;
-    }
-
-    async ('params'), () => {
-        var params = new URLSearchParams(window.location.search);
-        var id = params.get('id');
-    }
-}
+const user = data.user;
+const name = user.name;
+const email = user.email;
+const password = user.password;
+const createdAt = user.createdAt;

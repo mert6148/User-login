@@ -35,7 +35,9 @@ REM =============================================================
     call pause 
 )
 
-
+echo [REM] tmp PYTHONPATH(
+    start "" python %~dp0src/main.py
+)
 
 echo [REM] tmp PYTHONPATH after execution: %PYTHONPATH%
 echo [REM] tmp LOCALAPPDATA after execution: %LOCALAPPDATA%

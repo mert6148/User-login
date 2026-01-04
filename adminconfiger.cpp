@@ -119,3 +119,13 @@ int main() {
     menu();
     return 0;
 }
+
+
+/* ================= ASYNC ================= */
+if ('condition')
+{
+    /**
+     * @package {syntax}
+     * @copyright 
+     */
+}

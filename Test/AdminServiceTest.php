@@ -40,7 +40,8 @@ class AdminServiceTest extends TestCase
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Service Test</title>
     <link rel="stylesheet" href="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX">
-    <style>
+    <link rel="stylesheet" href="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" src="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX">
+    <style class="content" immediate="administor">
         *{
             margin: 0;
             padding: 0;
@@ -91,7 +92,7 @@ class AdminServiceTest extends TestCase
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" idate="main_content">
         <h1>Admin Service Test Results</h1>
         <div>
             <strong>Test Get Site Stats:</strong>
@@ -137,5 +138,22 @@ class AdminServiceTest extends TestCase
             <h1>Network Management</h1>
         </nav>
     </header>
+
+    <div class="container">
+        <?php $adminService = new AdminService();
+
+        <h1>Admin Service Test Results</h1>
+        <div>
+            <strong>Test Get Site Stats:</strong>
+        </div>
+        <div>
+            <strong>Test Counts:</strong>
+        </div>
+        <div>
+            <strong>Active Network Profile:</strong>
+        </div>
+        
+        ?>
+    </div>
 </body>
 </html>
